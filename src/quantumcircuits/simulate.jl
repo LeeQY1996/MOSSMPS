@@ -68,9 +68,8 @@ _param_env(::Circuit, ::Nothing) = _ParamEnv()
 
 # ── 演化 ─────────────────────────────────────────────────────────────────────
 
-# simulate / simulate! 挂到 QuantumCircuits.Interface 的同名泛型上
-# （`using QuantumCircuits` 时即可直接调用，无需限定）。
-import QuantumCircuits.Interface: simulate, simulate!
+# simulate / simulate! 已挂到 QuantumCircuits.Interface 的同名泛型上
+# （在主模块中 import；`using QuantumCircuits` 时即可直接调用，无需限定）。
 
 """
     simulate(c::Circuit, state; params=nothing, trunc=DefaultMPSTruncation) -> state'

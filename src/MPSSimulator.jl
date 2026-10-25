@@ -56,9 +56,12 @@ using QuantumCircuits
 using QuantumCircuits: GateOp, ChannelOp, MeasOp, ResetOp, BarrierOp, IfOp, BlockOp,
                        Operation, Circuit, Cond, Param, ClbitRef, CReg, ParamVector,
                        ClassicalStore, reg_value, set_clbit!,
-                       qubits, mat, kraus, parameters, unroll
+                       qubits, mat, kraus, parameters, unroll, eval_cond
+using QuantumCircuits.Hamiltonian: PauliTerm, PauliSum, SpinOpTerm, SpinOpSum,
+                                  _spin_matrix
 import QuantumCircuits: nqubits, measure
-using QuantumCircuits.Interface: Backend
+using QuantumCircuits.Interface: Backend, SimResult
+import QuantumCircuits.Interface: simulate, simulate!, supports
 
 # ── FiniteMPSAlgorithms：张量操作 / CanonicalMPS / 门 ───────────────────────
 using FiniteMPSAlgorithms
@@ -70,6 +73,7 @@ import FiniteMPSAlgorithms: apply!, canonicalize!, expectation, fidelity,
                             distance, distance2, iscanonical, isrightcanonical,
                             svectors_uninitialized, permute,
                             bonddim, bonddims, phydim, phydims
+
 import LinearAlgebra: normalize!, norm, dot, tr
 
 # ── 张量操作层（re-export FiniteMPSAlgorithms）──────────────────────────────

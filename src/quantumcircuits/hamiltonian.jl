@@ -3,8 +3,6 @@
 # 均不构造满算符矩阵：逐项化为局域算符链 / 门作用处理
 # （SpinOp 的稠密展开 `mat(t, n)` 仅供小规模验证 / 对拍）。
 
-using QuantumCircuits.Hamiltonian: PauliTerm, PauliSum, SpinOpTerm, SpinOpSum, _spin_matrix
-
 const _PAULI1 = Dict{Symbol,Matrix{ComplexF64}}(
     :I => [1 0; 0 1],
     :X => [0 1; 1 0],

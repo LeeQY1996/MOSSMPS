@@ -4,8 +4,6 @@
 # QuantumCircuits 统一提供（2026-10 上移，三后端共享）；本文件只保留
 # MPS 态上的 IfOp 分支执行与 QuantumCircuits 协议扩展。
 
-using QuantumCircuits: eval_cond
-
 """
     apply!(state, op::IfOp, store::ClassicalStore; trunc=DefaultMPSTruncation) -> state
 

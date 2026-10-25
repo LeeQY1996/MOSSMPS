@@ -5,9 +5,6 @@
 # 测量 / 经典反馈（IfOp）、信道指令；`shots > 0` 时逐 shot 采样，按
 # `counts_key` 约定聚合计数。每个门作用时按 `trunc` 做截断 SVD。
 
-using QuantumCircuits.Interface: Backend, SimResult
-import QuantumCircuits.Interface: simulate, supports
-
 """
     MatrixProductBackend(; dtype=ComplexF64, trunc=DefaultMPSTruncation)
         <: QuantumCircuits.Interface.Backend
