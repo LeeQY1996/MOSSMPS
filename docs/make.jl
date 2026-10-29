@@ -1,20 +1,16 @@
 using Documenter
-using LinearAlgebra
-using QuantumCircuits
-using QuantumCircuits.Hamiltonian: PauliTerm, PauliSum, SpinOpTerm, SpinOpSum
-using MPSSimulator
+using MOSSQuantum
+using MOSSQuantumMPS
 
 makedocs(
-	sitename = "MPSSimulator.jl",
-	authors = "Guo Chu",
-	pages = ["Home" => "index.md",
-	         "gettingstarted.md",
-	         "states.md",
-	         "coreops.md",
-	         "observables.md",
-	         "noise.md",
-	         "backend.md"],
-	format = Documenter.HTML(
-	    prettyurls = get(ENV, "CI", nothing) == "true"
-	)
-	)
+    sitename = "MOSSQuantumMPS.jl",
+    authors = "Guo Chu",
+    pages = ["Home" => "index.md",
+             "Getting started" => "gettingstarted.md",
+             "States" => "states.md",
+             "Core operations" => "coreops.md",
+             "Observables and readout" => "observables.md",
+             "Noise" => "noise.md",
+             "Backend" => "backend.md"],
+    format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
+)

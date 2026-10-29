@@ -1,23 +1,23 @@
-name = "MPSSimulator"
+name = "MOSSQuantumMPS"
 uuid = "81a3ca4a-d8a6-413d-b6dc-9dafd4a3cd05"
 authors = ["Guo Chu <guochu604b@gmail.com>"]
 version = "0.1.0"
 
 [deps]
-FiniteMPSAlgorithms = "b7c1d2a3-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 MatrixAlgebraKit = "6c742aac-3347-4629-af66-fc926824e5e4"
-QuantumCircuits = "aefa5731-75ce-4e77-8b64-9dbb49b79a07"
+MOSSQuantum = "a9444a5f-c7f1-4505-aa0b-1b1f5991640b"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 TensorOperations = "6aa20fa7-93e2-5fca-9bc0-fbd0db3c71a2"
 
 [compat]
+MOSSQuantum = "0.1"
+TensorOperations = "5"
 julia = "1.10"
 
 [extras]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-VQC = "1a0f967e-e74f-4f58-8b53-d7c235b06da4"
 
 [targets]
-test = ["Test", "LinearAlgebra", "VQC"]
+test = ["Test", "LinearAlgebra"]

@@ -15,7 +15,6 @@ function marginal_probabilities(s::Union{MPS,DensityOperatorMPS}, qs::AbstractVe
     srt = sort!(collect(Int, qs))                  # 计算时按升序
     rdm = partial_tr(s, setdiff(1:n, srt))
     ps = real.(diag(rdm))
-    k == n && return ps
     # 重排到用户给定顺序：out[j] 对应 qs[j]
     pos = [findfirst(==(q), srt) for q in qs]
     out = zeros(Float64, 1 << k)
@@ -47,14 +46,14 @@ probabilities(s::Union{MPS,DensityOperatorMPS}) = marginal_probabilities(s, coll
 * `measure!(s)`：测量全部比特，返回所有结果按小端序组成的整数。
 """
 function measure!(s::Union{MPS,DensityOperatorMPS}, q::Integer;
-                  trunc::TruncationScheme=DefaultMPSTruncation)
+                  trunc::TruncationScheme=DefaultMPSTruncation, rng::AbstractRNG=Random.default_rng())
     q = Int(q)
     n = length(s)
     1 <= q <= n || throw(ArgumentError("qubit index $q out of range [1, $n]"))
     p0, p1 = marginal_probabilities(s, q)
     p0 = max(p0, 0.0)
     p1 = max(p1, 0.0)                     # 截断误差可能产生 -1e-17 级负概率
-    outcome = rand() * (p0 + p1) < p0 ? 0 : 1
+    outcome = rand(rng) * (p0 + p1) < p0 ? 0 : 1
     p = outcome == 0 ? p0 : p1
     if p <= 0                             # 采到数值零概率结局：取概率 ≈ 1 的另一结局
         outcome = 1 - outcome
@@ -71,15 +70,15 @@ function measure!(s::Union{MPS,DensityOperatorMPS}, q::Integer;
 end
 
 function measure!(s::Union{MPS,DensityOperatorMPS}, qs::AbstractVector{Int};
-                  trunc::TruncationScheme=DefaultMPSTruncation)
-    return Int[measure!(s, q; trunc=trunc) for q in qs]
+                  trunc::TruncationScheme=DefaultMPSTruncation, rng::AbstractRNG=Random.default_rng())
+    return Int[measure!(s, q; trunc=trunc, rng=rng) for q in qs]
 end
 
 function measure!(s::Union{MPS,DensityOperatorMPS};
-                  trunc::TruncationScheme=DefaultMPSTruncation)
+                  trunc::TruncationScheme=DefaultMPSTruncation, rng::AbstractRNG=Random.default_rng())
     outcome = 0
     for q in 1:length(s)
-        outcome |= measure!(s, q; trunc=trunc) << (q - 1)
+        outcome |= measure!(s, q; trunc=trunc, rng=rng) << (q - 1)
     end
     return outcome
 end

@@ -4,8 +4,8 @@
 # `DensityOperatorMPS` 的门先经 `_superoperator` 映成融合指标空间上的
 # 等维矩阵，再走与纯态完全相同的门作用机制。
 #
-# 与 FiniteMPSAlgorithms 的分工：
-#   * 相邻内容交换（SWAP 聚集）直接复用 `FiniteMPSAlgorithms.swap!`
+# 与 MPSCore 的分工：
+#   * 相邻内容交换（SWAP 聚集）直接复用 `MPSCore.swap!`
 #     （Hastings 式交换，任意物理维，正则形式保持）；
 #   * 其余门作用原语（单比特门、任意 N 体门的 Hastings 块更新、
 #     比特轴重排、超算符映射）全部为本地实现，见 `coreops.jl`。
@@ -147,7 +147,7 @@ end
 """
     _gather!(psi, positions, trunc) -> Vector{Pair{Int,Int}}
 
-用相邻 SWAP（复用 `FiniteMPSAlgorithms.swap!`）把 `positions`（升序）上的
+用相邻 SWAP（复用 `MPSCore.swap!`）把 `positions`（升序）上的
 比特聚集到连续块 `positions[1] … positions[1]+N-1`（就地），返回已执行的
 交换序列（供 [`_scatter!`](@ref) 撤销）。
 """

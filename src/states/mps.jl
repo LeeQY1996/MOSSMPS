@@ -1,14 +1,14 @@
-# mps.jl — 态层：FiniteMPSAlgorithms.CanonicalMPS 的薄封装
+# mps.jl — 态层：MPSCore.CanonicalMPS 的薄封装
 #
 # 纯态 `MPS`（局域维 2）与混合态 `DensityOperatorMPS`（局域维 4，融合指标
 # `p = i + 2j`，ket 为低位）都是 `CanonicalMPS` 的简单包装：站点张量存储、
 # 键 Schmidt 谱、正交化（`canonicalize!`）、相邻内容交换（`swap!`）、
 # 两体门作用与线性代数（`dot` / `norm` / `distance`）全部复用
-# FiniteMPSAlgorithms 的现成实现。
+# MPSCore 的现成实现。
 #
 # 封装层不变量：
 #   * `scaling(psi.core) == 1`——外部尺度始终存放在站点张量数据中；
-#     FiniteMPSAlgorithms 的正交化内核会把范数暂时吸进 `scaling` 字段，
+#     MPSCore 的正交化内核会把范数暂时吸进 `scaling` 字段，
 #     每次内核调用后用 `_sync!` 折回数据；
 #   * `psi.core.s[b+1]` 为键 `b` 的 Schmidt 谱（数据网络意义下），
 #     `missing` 表示正则信息未知。
@@ -23,17 +23,17 @@
 
 MPS 状态类型的抽象基类：纯态 [`MPS`](@ref)（局域维 2）与混合态
 [`DensityOperatorMPS`](@ref)（局域维 4）共用同一封装布局
-（内部为 `FiniteMPSAlgorithms.CanonicalMPS`）与大多数操作
+（内部为 `MPSCore.CanonicalMPS`）与大多数操作
 （索引、拷贝、`canonicalize!`、键维查询等）。
 """
-abstract type AbstractMPS{T<:Number} end
+abstract type AbstractMPS{T<:Number} <: MOSSQuantum.AbstractQuantumState end
 
 """
     MPS(core::CanonicalMPS)
     MPS(data, [svectors])
     MPS{T,R}(core)
 
-纯态矩阵乘积态（局域物理维 2），`FiniteMPSAlgorithms.CanonicalMPS` 的薄封装。
+纯态矩阵乘积态（局域物理维 2），`MPSCore.CanonicalMPS` 的薄封装。
 数据布局与正则形式约定见 [`AbstractMPS`](@ref)；构造时校验键维匹配、
 开放边界与局域维。
 """
@@ -60,7 +60,7 @@ end
     DensityOperatorMPS{T,R}(core)
 
 混合态密度算符 MPS（局域物理维 4，融合指标 `p = i + 2j`，ket 为低位），
-`FiniteMPSAlgorithms.CanonicalMPS` 的薄封装。数据布局与正则形式约定见
+`MPSCore.CanonicalMPS` 的薄封装。数据布局与正则形式约定见
 [`AbstractMPS`](@ref)；构造时校验键维匹配、开放边界与局域维。
 """
 struct DensityOperatorMPS{T<:Number,R<:Real} <: AbstractMPS{T}
@@ -89,7 +89,7 @@ Base.setindex!(psi::AbstractMPS, A::AbstractArray{<:Number,3}, k::Int) = (psi.co
 Base.firstindex(psi::AbstractMPS) = 1
 Base.lastindex(psi::AbstractMPS) = length(psi)
 
-"底层 `CanonicalMPS`（FiniteMPSAlgorithms 数据结构）。"
+"底层 `CanonicalMPS`（MPSCore 数据结构）。"
 core(psi::AbstractMPS) = psi.core
 
 Base.eltype(::Type{<:AbstractMPS{T}}) where {T} = T
@@ -128,7 +128,7 @@ _svec_eq(a::Missing, b) = false
 _svec_eq(a, b::Missing) = false
 _svec_eq(a, b) = a == b
 
-# ── 形状查询（与 FiniteMPSAlgorithms 对齐：名字、语义与泛型方法一致）─────────
+# ── 形状查询（与 MPSCore 对齐：名字、语义与泛型方法一致）─────────
 # 封装态转发到 core（CanonicalMPS），phydim(psi, k) 直接走站点张量：
 #   bonddims(ψ)：内部键维数组（长度 L-1）  bonddim(ψ)：最大键维
 #   bonddim(ψ, b)：键 b 的维数            phydims(ψ)：各站点物理维数组
@@ -213,7 +213,7 @@ end
     canonicalize!(psi::MPS; trunc=NoTruncation(), normalize=true) -> Float64
 
 把 `psi` 扫描为混合正则形式（站点右正则 + `svectors` 记录各键 Schmidt 谱），
-复用 `FiniteMPSAlgorithms.canonicalize!`：先自左向右 QR 等距化（无截断），
+复用 `MPSCore.canonicalize!`：先自左向右 QR 等距化（无截断），
 再自右向左 SVD 扫描捕获谱（`trunc` 非空时逐键截断，兼作压缩）。
 返回最大单键截断误差。
 
@@ -257,14 +257,14 @@ end
     LinearAlgebra.norm(psi::AbstractMPS)
 
 态在融合指标空间的 2-范数（双网络全收缩，不依赖正则形式）；
-对 `DensityOperatorMPS` 即 `sqrt(tr ρ²)`。复用 `FiniteMPSAlgorithms.norm`。
+对 `DensityOperatorMPS` 即 `sqrt(tr ρ²)`。复用 `MPSCore.norm`。
 """
 LinearAlgebra.norm(psi::AbstractMPS) = norm(psi.core)
 
 """
     LinearAlgebra.dot(a::MPS, b::MPS)
 
-重叠 `⟨a|b⟩`（全收缩，无截断）。复用 `FiniteMPSAlgorithms.dot`。
+重叠 `⟨a|b⟩`（全收缩，无截断）。复用 `MPSCore.dot`。
 """
 LinearAlgebra.dot(a::MPS, b::MPS) = dot(a.core, b.core)
 

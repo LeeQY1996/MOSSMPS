@@ -11,7 +11,7 @@
 # `canonicalize!`（单比特门不需要键谱，无需正则化）。门作用机制：
 # 所有 N 体门（N ≥ 2，含非相邻）都走本地 Hastings 块更新内核
 # （`_apply_gate_block!`；非相邻时先 `_gather!` 聚集再 `_scatter!` 散开），
-# 相邻内容交换（SWAP）复用 `FiniteMPSAlgorithms.swap!`。
+# 相邻内容交换（SWAP）复用 `MPSCore.swap!`。
 # 酉门严格保持正则形式；非幺正算子（投影 / Kraus）可能破坏正则性——
 # 状态始终精确，需要时可用 `canonicalize!` 恢复。
 
@@ -63,7 +63,7 @@ function apply!(psi::MPS, m::AbstractMatrix, positions::NTuple{N,Int};
     d = 1 << N
     if size(m, 1) == size(m, 2) == d * d
         # 局域超算符：纯态自动提升为密度算符 MPS
-        rho = densitymatrix(psi)
+        rho = densitymatrix(psi; trunc=trunc)
         return apply!(rho, m, positions; trunc=trunc)
     end
     (size(m, 1) == size(m, 2) == d) ||
@@ -144,7 +144,7 @@ end
 function apply_kraus!(psi::MPS, ks, positions::NTuple{N,Int};
                       trunc::TruncationScheme=DefaultMPSTruncation) where {N}
     eltype(psi) <: Real && any(K -> !(eltype(K) <: Real), ks) && (psi = _ensure_complex(psi))
-    return apply_kraus!(densitymatrix(psi), ks, positions; trunc=trunc)
+    return apply_kraus!(densitymatrix(psi; trunc=trunc), ks, positions; trunc=trunc)
 end
 
 apply_kraus!(s::Union{MPS,DensityOperatorMPS}, ks, positions::Vector{Int};

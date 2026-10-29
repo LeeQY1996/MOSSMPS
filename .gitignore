@@ -9,3 +9,6 @@ docs/build/
 *.ji
 *.o
 Depot.jl
+
+# Local development environment
+/Manifest.toml

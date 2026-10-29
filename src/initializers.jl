@@ -2,7 +2,7 @@
 #
 # 命名与 VQC 对齐（加 `_mps` 后缀以避免与稠密后端的导出冲突），
 # 同时保留旧版 `statevector_mps` / `densitymatrix_mps` 别名。
-# 乘积态与随机态直接复用 FiniteMPSAlgorithms 的 `prodmps` / `randommps`。
+# 乘积态与随机态直接复用 MPSCore 的 `prodmps` / `randommps`。
 
 "乘积态：把内部键（维为 1）的键谱初始化为平凡 `[1]`，免去首次多体门前的正则化。"
 function _init_trivial_svectors!(psi::AbstractMPS)
@@ -104,7 +104,7 @@ amplitude_encoding_mps(v::AbstractVector{<:Number}; kwargs...) =
 """
     rand_state_mps([T=ComplexF64,] n; D=8) -> MPS
 
-键维上限 `D` 的随机纯态（高斯张量，经 `FiniteMPSAlgorithms.randommps`
+键维上限 `D` 的随机纯态（高斯张量，经 `MPSCore.randommps`
 正则化并归一）。
 """
 function rand_state_mps(::Type{T}, n::Int; D::Int=8) where {T<:Number}
@@ -117,14 +117,15 @@ rand_state_mps(n::Int; kwargs...) = rand_state_mps(ComplexF64, n; kwargs...)
 """
     densitymatrix(psi::MPS; trunc=DefaultMPSTruncation) -> DensityOperatorMPS
 
-纯态 → 密度算符 MPS（精确构造后按 `trunc` 压缩键维）。
+纯态 → 密度算符 MPS（精确构造后按 `trunc` 压缩键维）。不自动归一化：
+不截断时结果为 `|ψ⟩⟨ψ|`，其迹等于输入态的范数平方。
 注意：构造中局域张量占用 `O(D⁴)` 内存，适合中等键维以下的态。
 """
 function densitymatrix(psi::MPS; trunc::TruncationScheme=DefaultMPSTruncation)
     T = eltype(psi)
     L = length(psi)
     ψ = copy(psi)
-    canonicalize!(ψ)
+    canonicalize!(ψ; normalize=false)
     data = Vector{Array{T,3}}(undef, L)
     for k in 1:L
         A = ψ[k]
@@ -142,7 +143,7 @@ end
     densitymatrix_mps([T=ComplexF64,] n) -> DensityOperatorMPS
     densitymatrix_mps([T=ComplexF64,] bits::Vector{Int}) -> DensityOperatorMPS
 
-计算基态的密度算符 MPS（`|bits⟩⟨bits|`）。复用 FiniteMPSAlgorithms 的
+计算基态的密度算符 MPS（`|bits⟩⟨bits|`）。复用 MPSCore 的
 `prodmps`：`|b⟩⟨b|` 的融合指标为 `p = i + 2j = 3b`（1-based 索引 `3b+1`）。
 """
 function densitymatrix_mps(::Type{T}, states::Vector{Int}) where {T<:Number}

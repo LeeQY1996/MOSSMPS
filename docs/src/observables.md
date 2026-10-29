@@ -1,57 +1,15 @@
-# 可观测量与测量
+# 可观测量与读取
 
-所有可观测量均**不构造满算符矩阵**：局域算符链直接在转移（MPO-less）
-收缩中插入算符；`GateOp` 经重排后作用到 ket 副本（纯态）或仅作用 ket 侧
-的超算符（混合态）；Pauli / 自旋代数逐项化为局域算符链。
+MOSSQuantum 后端提供 `QubitsTerm` 和 `QubitsOperator` 的期望值，不需要构造整个稠密算符矩阵。读取接口接受显式 RNG：
 
-支持的可观测量类型：
-
-* **局域算符链**：`Vector{Pair{Int,<:AbstractMatrix}}`（qubit → 2×2 矩阵，
-  任意顺序，缺失比特为恒等）；
-* **Pauli 代数**：`PauliTerm` / `PauliSum`（`QuantumCircuits.Hamiltonian`）；
-* **自旋算符**：`SpinOpTerm` / `SpinOpSum`（支持 `:I/:X/:Y/:Z/:P/:M` 与
-  任意 2×2 矩阵因子，同位多因子按乘积序合并）；
-* **`GateOp`**：酉门作为可观测量，`⟨ψ|U|ψ⟩` 或 `tr(ρ U)`。
-
-注意：本包不提供稠密（满）矩阵算符的期望值接口；`QuantumCircuits` 的
-`mat(t::SpinOpTerm, n)` 等稠密展开仅供小规模验证 / 对拍。
-
-```@docs
-MPSSimulator.expectation
-fidelity
-overlap
-partial_tr
-densitymatrix(rho::DensityOperatorMPS)
-amplitude
-statevector
+```julia
+using MOSSQuantum, MOSSQuantumMPS, Random
+backend = MatrixProductBackend(trunc=NoTruncation())
+state = zero_state_mps(2)
+value = MOSSQuantum.expectation(backend, QubitsTerm(1=>Z), state)
+samples = MOSSQuantum.sample(Xoshiro(42), state, 100; backend=backend)
 ```
 
-## 测量与采样
+`MOSSQuantum.sample` 在未指定 `readout` 时逐站点采样，不构造完整概率分布；每次采样会复制态并依次测量所选比特。指定 `readout` 时，它会调用通用 `execute` 读取路径。`MOSSQuantum.probabilities` 生成大小为 `2^k` 的分布（`k` 为读取比特数）。通用 `MOSSQuantum.execute` 的读取路径仍可能构造完整分布，不能假定具有逐站点采样的空间复杂度。
 
-```@docs
-probabilities
-marginal_probabilities
-measure!
-sample
-post_select
-post_select!
-```
-
-`measure!` **就地坍缩**并归一化（纯态保持 2-范数，混合态保持迹 1）；
-`sample` 为非破坏性采样（按边缘概率分布，指数级于子集大小）。
-
-## 纯态-混合态互操作
-
-```@example
-using QuantumCircuits, MPSSimulator
-import MPSSimulator: expectation
-using QuantumCircuits.Hamiltonian
-using LinearAlgebra
-
-ψ = simulate(Circuit([H(1), CX(1, 2)]), zero_state_mps(2))
-ρ = densitymatrix(ψ)                        # 纯态 → 混合态
-
-println("⟨Z₁⟩  = ", expectation(PauliTerm(1.0, 1 => :Z), ψ))
-println("tr(ρZ₁) = ", expectation(PauliTerm(1.0, 1 => :Z), ρ))
-println("fidelity = ", fidelity(ρ, ψ))     # ⟶ 1
-```
+截断后的态若未归一化，读取会报错。纯态用 `LinearAlgebra.normalize!`、密度算符用 `MOSSQuantumMPS.normalize_tr!` 进行归一化后再读取。测量和后选择会改变状态；随机测量传入 `rng` 来控制随机性。
