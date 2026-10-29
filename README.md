@@ -1,6 +1,6 @@
 # MOSSQuantumMPS
 
-MOSSQuantumMPS is an MPS simulator and companion backend for [MOSSQuantum](https://github.com/LeeQY1996/MOSS). It represents pure states as matrix product states (`MPS`) and mixed states as density-operator MPS (`DensityOperatorMPS`). The shared dense-tensor MPS/MPO foundation lives in `MOSSQuantumMPS.MPSCore`; the separate FiniteMPSAlgorithms package builds higher-level algorithms on it.
+MOSSQuantumMPS is an MPS simulator and companion backend for [MOSSQuantum](https://github.com/LeeQY1996/MOSS). It represents pure states as matrix product states (`MPS`) and mixed states as density-operator MPS (`DensityOperatorMPS`). The shared dense-tensor MPS/MPO foundation lives in `MOSSQuantumMPS.MPSCore`, and higher-level tensor-network algorithms live in `MOSSQuantumMPS.MPSAlgorithms`.
 
 ## Installation for local development
 
@@ -16,7 +16,21 @@ Pkg.develop([
 Pkg.instantiate()
 ```
 
-The simulator does not depend on FiniteMPSAlgorithms. To use DMRG, TDVP or other algorithms, develop the separate algorithm package in the same environment.
+DMRG, TDVP, TEBD, compression, tensor-network arithmetic, models, and related algorithms are included in `MOSSQuantumMPS.MPSAlgorithms`; the separate FiniteMPSAlgorithms package is no longer required.
+
+```julia
+using MOSSQuantumMPS.MPSCore: OpTerm, MPOHamiltonian
+using MOSSQuantumMPS.MPSAlgorithms: DMRG1, ground_state
+
+Z = [1.0 0; 0 -1]
+X = [0.0 1; 1 0]
+hamiltonian = MPOHamiltonian(OpTerm(-1.0, 1 => Z) + OpTerm(-1.0, 2 => Z) +
+                             OpTerm(-0.5, 1 => X, 2 => X))
+energy, state, info = ground_state(hamiltonian, DMRG1(D=8, maxiter=50))
+```
+
+The submodule keeps algorithm names such as `sample` and `amplitude` separate from simulator APIs while using exactly the same `MPSCore` types and generic functions. Model builders are available through `MOSSQuantumMPS.MPSAlgorithms.Models`. See the [algorithm reference and migration guide](docs/mps-algorithms.md) for the main interfaces.
+
 
 ## Example
 

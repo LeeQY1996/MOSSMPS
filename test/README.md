@@ -1,7 +1,8 @@
 # Tests
 
 `runtests.jl` runs the simulator integration suite and the migrated `MPSCore`
-foundation suite. The core tests are adapted from FiniteMPSAlgorithms; see
+foundation suite, plus the migrated algorithm suite in `algorithms_suite/`. These
+tests are adapted from FiniteMPSAlgorithms; see
 [PROVENANCE.md](../PROVENANCE.md).
 
 The other top-level historical test files refer to predecessor interfaces and

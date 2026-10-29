@@ -1,5 +1,10 @@
 # 正则形式保持验证（canonical form check）
 
+> **历史资料**：对应脚本依赖旧的 MPSSimulator、QuantumCircuits、VQC 和
+> FiniteMPSAlgorithms，尚未适配当前 MOSSQuantumMPS，不能在当前项目环境直接运行。
+> 下文保留的是旧项目的验证方法和历史结果，不代表当前版本已完成相同验证。
+> 当前项目的验证方法请参见 [项目说明](../README.md) 和 [测试说明](../test/README.md)。
+
 对应脚本：[`debug/canonical_form.jl`](canonical_form.jl)
 
 ## 目的
@@ -56,7 +61,7 @@
   `canonicalize!` 可完整恢复正则形式；
 * MPS 后端与 VQC 稠密后端在全部场景下机器精度一致。
 
-## 运行方式
+## 历史运行方式（需要旧项目环境）
 
 ```sh
 JULIA_PROBE_LIBSTDCXX=0 JULIA_DEPOT_PATH=/tmp/jdepot: julia --startup-file=no \

@@ -37,8 +37,12 @@ include("initializers.jl")
 # ── MOSSQuantum 后端桥接 ──────────────────────────────────────────────────
 include("moss_backend.jl")
 
+# MPS/MPO algorithms share the same MPSCore objects as the simulator.
+include("mpsalgorithms/MPSAlgorithms.jl")
+
 # ── 导出 ────────────────────────────────────────────────────────────────────
 export # 张量操作（MPSCore re-export）
+    MPSAlgorithms,
     TruncationScheme, NoTruncation, TruncateDim, TruncateRelError, TruncateDimCutoff,
     truncdim, truncrelerr, truncdimcutoff,
     QR, QRpos, LQ, LQpos, SVD, SDD, Polar,

@@ -1,3 +1,7 @@
+# 历史调试脚本：保留供参考，未适配当前 MOSSQuantumMPS，不能在当前项目环境直接运行。
+# 此脚本依赖旧的 MPSSimulator、QuantumCircuits、VQC 和 FiniteMPSAlgorithms。
+# 当前 MOSSQuantumMPS 验证方式请参考项目 README 和 test/README.md。
+#
 # canonical_form.jl — 随机线路上验证门作用过程的正则形式保持
 #
 # 对随机生成的量子线路逐门作用，检查：
@@ -6,7 +10,7 @@
 #   3. 非幺正 Kraus 信道：正则性被破坏（预期），`canonicalize!` 可恢复，
 #      且全程与 VQC 稠密后端逐步对照一致。
 #
-# 运行：
+# 历史运行命令（仅适用于旧项目环境）：
 #   JULIA_PROBE_LIBSTDCXX=0 JULIA_DEPOT_PATH=/tmp/jdepot: julia --startup-file=no \
 #     debug/canonical_form.jl
 

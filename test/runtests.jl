@@ -11,3 +11,5 @@ Random.seed!(20260908)
 end
 
 include("core_suite.jl")
+
+include("algorithms_suite/runtests.jl")

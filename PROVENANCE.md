@@ -7,3 +7,8 @@ contain a LICENSE or an explicit license statement when reviewed. The
 repository GPL license does not establish authorization for this upstream code;
 confirm permission from the relevant copyright holders before redistribution.
 This file records provenance and does not grant or change any rights.
+
+The MPS/MPO algorithms in `src/mpsalgorithms/` and related tests in
+`test/algorithms_suite/` were adapted from the LeeQY1996/FiniteMPSAlgorithms
+checkout at `f777221a676fa90bcf6a09d0dbd62d47b55c9df3`, including subsequent
+local fixes to WII boundary evolution and its regression tests.
