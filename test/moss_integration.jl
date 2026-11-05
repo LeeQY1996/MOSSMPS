@@ -7,6 +7,66 @@ import MOSSQuantumMPS as MPS
 # The backend instance owns the truncation policy; state copies are independent.
 const EXACT_BACKEND = MPS.MatrixProductBackend(; trunc=MPS.NoTruncation())
 
+@testset "Automatic mixed parameters through MPS backend" begin
+    θ = MQ.Parameter(:θ)
+    circuit = MQ.QCircuit([MQ.RyGate(1,.13;isparas=true),MQ.RxGate(2,θ),
+        MQ.CNOTGate(1,2),MQ.RzGate(1,2θ+.1),MQ.RyGate(2,.2)])
+    compiled = MQ.compile_parameters(circuit)
+    a = first(MQ.parameter_order(compiled))
+    observable = MQ.QubitsTerm(1=>"Z")+.3MQ.QubitsTerm(1=>"X",2=>"Y")
+    initial = MPS.zero_state_mps(2)
+    before = MPS.statevector(initial)
+    dense = MQ.ExpectationObjective(compiled,observable,MQ.StateVector(2))
+    compressed = MQ.ExpectationObjective(compiled,observable,initial;backend=EXACT_BACKEND)
+    point = [.37,.21]
+    expected_value,expected_gradient = MQ.value_and_gradient(MQ.AdjointGradient(),dense,point)
+    @test MQ.parameter_order(compressed)==[a,θ]
+    @test MQ.initial_parameters(compressed;values=Dict(θ=>point[2]))==[.13,point[2]]
+    for method in (MQ.ParameterShift(),MQ.FiniteDifference(step=1e-5))
+        value,gradient = MQ.value_and_gradient(method,compressed,point)
+        @test value ≈ expected_value atol=1e-10
+        @test gradient ≈ expected_gradient atol=1e-8
+    end
+    @test !MQ.supports_gradient(MQ.AdjointGradient(),compressed,point)
+    @test MPS.statevector(initial)==before
+    bound = MQ.bind_parameters(compiled,point)
+    @test MQ.probabilities(EXACT_BACKEND,MQ.simulate(bound,initial;backend=EXACT_BACKEND).state) ≈
+          MQ.probabilities(MQ.simulate(bound,MQ.StateVector(2)).state) atol=1e-10
+    frozen = MQ.ExpectationObjective(compiled,observable,initial;backend=EXACT_BACKEND,fixed=Dict(a=>point[1]))
+    @test MQ.parameter_order(frozen)==[θ]
+    @test last(MQ.value_and_gradient(MQ.ParameterShift(),frozen,[point[2]])) ≈ [expected_gradient[2]] atol=1e-8
+end
+
+@testset "Named parameters through MPS backend" begin
+    θ, φ = MQ.Parameter(:θ), MQ.Parameter(:φ)
+    circuit = MQ.QCircuit([MQ.RyGate(1, θ), MQ.RzGate(2, φ + θ/2), MQ.CNOTGate(1, 2)])
+    observable = MQ.QubitsTerm(1 => "Z") + 0.3 * MQ.QubitsTerm(2 => "X")
+    initial = MPS.zero_state_mps(2)
+    before = MPS.statevector(initial)
+    dense = MQ.ExpectationObjective(circuit, observable, MQ.StateVector(2);
+        parameter_order=[θ, φ], fixed=Dict(φ => 0.1))
+    compressed = MQ.ExpectationObjective(circuit, observable, initial;
+        backend=EXACT_BACKEND, parameter_order=[θ, φ], fixed=Dict(φ => 0.1))
+    value, gradient = MQ.value_and_gradient(MQ.AdjointGradient(), dense, [0.37])
+    for method in (MQ.ParameterShift(), MQ.FiniteDifference(; step=1e-5))
+        mps_value, mps_gradient = MQ.value_and_gradient(method, compressed, [0.37])
+        @test mps_value ≈ value atol=1e-10
+        @test mps_gradient ≈ gradient atol=1e-8
+    end
+    @test MQ.parameter_order(compressed) == [θ]
+    @test MPS.statevector(initial) == before
+    @test_throws MQ.UnboundParameterError MQ.simulate(circuit, initial; backend=EXACT_BACKEND)
+    @test MQ.execution_capability(EXACT_BACKEND, circuit, initial).status === :unknown
+    saved_rng = copy(Random.default_rng())
+    @test_throws MQ.UnboundParameterError MQ.apply!(EXACT_BACKEND,
+        MQ.QCircuit([MQ.XGate(1), circuit]), initial)
+    @test MPS.statevector(initial) == before &&
+          rand(copy(Random.default_rng())) == rand(saved_rng)
+    bound = MQ.bind_parameters(circuit, Dict(θ => 0.37, φ => 0.1))
+    @test MQ.probabilities(EXACT_BACKEND, MQ.simulate(bound, initial; backend=EXACT_BACKEND).state) ≈
+          MQ.probabilities(MQ.simulate(bound, MQ.StateVector(2)).state) atol=1e-10
+end
+
 function evolve_pair(operations, n=3)
     dense = MQ.StateVector(n)
     compressed = MPS.zero_state_mps(n)
@@ -248,4 +308,113 @@ end
     @test abs(actual[4,4] - expected[4,4]) < 1e-13
     @test actual ≈ expected atol=1e-13
     @test MPS.statevector(psi) ≈ vector
+end
+
+@testset "Cross-backend experiment contracts" begin
+    initial = MPS.zero_state_mps(2)
+    original = MPS.statevector(initial)
+    circuit = MQ.QCircuit([MQ.HGate(1), MQ.CNOTGate(1,2),
+                           MQ.AmplitudeDamping(1; γ=0.2), MQ.XGate(2)])
+    dense = MQ.simulate(circuit, MQ.StateVector(2)).state
+    mps = MQ.simulate(circuit, initial; backend=EXACT_BACKEND).state
+    @test mps isa MPS.DensityOperatorMPS
+    @test MPS.densitymatrix(mps) ≈ MQ.storage(dense) atol=1e-10
+    @test MPS.statevector(initial) == original
+
+    # A downstream gate must continue using the supplied truncation policy,
+    # including after a pure-to-mixed conversion.
+    lossy = MPS.MatrixProductBackend(; trunc=MPS.truncdim(1))
+    short = MQ.QCircuit([MQ.HGate(1), MQ.CNOTGate(1,2),
+                         MQ.AmplitudeDamping(1; γ=0.2), MQ.XGate(2)])
+    lossy_result = MQ.simulate(short, initial; backend=lossy).state
+    @test lossy_result isa MPS.DensityOperatorMPS
+    @test real(tr(lossy_result)) ≈ 0.5 atol=1e-10
+
+    # Deterministic observables exercise state and circuit estimators without
+    # requiring the random draws of two backends to coincide.
+    bell = MQ.QCircuit([MQ.HGate(1), MQ.CNOTGate(1,2)])
+    bell_mps = MQ.simulate(bell, initial; backend=EXACT_BACKEND).state
+    zz = MQ.QubitsTerm(1=>"Z", 2=>"Z")
+    xx = MQ.QubitsTerm(1=>"X", 2=>"X")
+    for observable in (zz, xx)
+        state_estimate = MQ.estimate(observable, bell_mps; shots=40,
+                                    backend=EXACT_BACKEND, rng=MersenneTwister(22))
+        circuit_estimate = MQ.estimate(observable, bell, initial; shots=40,
+                                      backend=EXACT_BACKEND, rng=MersenneTwister(22))
+        @test state_estimate.value ≈ 1 atol=1e-10
+        @test circuit_estimate.value ≈ 1 atol=1e-10
+        @test state_estimate.shots == circuit_estimate.shots == 40
+    end
+
+    # A flipped reported measurement controls the branch while the original
+    # physical outcome is retained in the measurement record.
+    flip = MQ.ReadoutError(1; p0_to_1=1, p1_to_0=1, scope=:measurement)
+    feedback = MQ.QCircuit([MQ.QMeasure(1; key=:m, auto_reset=false),
+                            MQ.Conditional(:m, MQ.XGate(2))])
+    result = MQ.execute(feedback, initial; backend=EXACT_BACKEND, shots=8,
+                        readout=flip, rng=MersenneTwister(41))
+    @test result.counts == Dict("01"=>8)
+    @test all(only(records).outcome == 0 && only(records).reported_outcome == 1
+              for records in result.measurements)
+    @test all(register[:m] == 1 for register in result.classical)
+    @test MPS.statevector(initial) == original
+end
+
+@testset "Large-register terminal sampling" begin
+    # A full reduced density matrix for all 20 selected sites would require
+    # 4^20 entries. These execution paths instead use sequential sampling.
+    initial = MPS.zero_state_mps(20)
+    circuit = MQ.QCircuit()
+    result = MQ.execute(circuit, initial; shots=3, backend=EXACT_BACKEND,
+                        rng=MersenneTwister(19))
+    @test size(result.samples) == (3,20)
+    @test result.counts == Dict(repeat("0",20)=>3)
+
+    flip = MQ.ReadoutError(20; p0_to_1=1, p1_to_0=1, scope=:terminal)
+    counts = MQ.execute(circuit, initial; shots=3, backend=EXACT_BACKEND,
+                        readout=flip, result=:counts, rng=MersenneTwister(19))
+    @test counts.counts == Dict(repeat("0",19)*"1"=>3)
+    @test counts.accepted == counts.shots == 3
+    empty_result = MQ.execute(circuit, initial; shots=0, backend=EXACT_BACKEND,
+                              rng=MersenneTwister(21))
+    @test size(empty_result.samples) == (0,20)
+    @test MQ.probabilities(EXACT_BACKEND, initial; qubits=(1,20)) ≈ [1,0,0,0]
+end
+
+@testset "MPS execution capability reports" begin
+    initial = MPS.zero_state_mps(2)
+    original = MPS.statevector(initial)
+    branch = MQ.QCircuit([MQ.HGate(1), MQ.QMeasure(1; key=:m, auto_reset=false),
+                          MQ.Conditional(:m, MQ.AmplitudeDamping(2; γ=0.2);
+                                         otherwise=MQ.XGate(2)),
+                          MQ.XGate(1)])
+    for mode in (:simulate, :execute)
+        report = MQ.execution_capability(EXACT_BACKEND, branch, initial; mode=mode)
+        @test report.status === :supported
+        @test Set(report.final_state_types) == Set([MPS.MPS, MPS.DensityOperatorMPS])
+    end
+    seen = Set{Int}()
+    for seed in 1:8
+        mps = MQ.simulate(branch, initial; backend=EXACT_BACKEND, rng=MersenneTwister(seed))
+        dense = MQ.simulate(branch, MQ.StateVector(2); rng=MersenneTwister(seed))
+        bit = mps.classical[:m]
+        push!(seen, bit)
+        @test bit == dense.classical[:m]
+        @test mps.state isa (bit == 1 ? MPS.DensityOperatorMPS : MPS.MPS)
+        @test MQ.expectation(EXACT_BACKEND, MQ.QubitsTerm(2=>"Z"), mps.state) ≈
+              MQ.expectation(MQ.QubitsTerm(2=>"Z"), dense.state) atol=1e-10
+    end
+    @test seen == Set([0,1])
+    unsupported = MQ.execution_capability(EXACT_BACKEND,
+        MQ.QCircuit([MQ.QMeasure(1; keep=false)]), initial; mode=:simulate)
+    @test unsupported.status === :unsupported
+    @test any(issue -> issue.path == (1,), unsupported.issues)
+    @test MQ.execution_capability(EXACT_BACKEND, branch, initial; mode=:apply).status === :unsupported
+    estimate_report = MQ.execution_capability(EXACT_BACKEND, MQ.QCircuit([MQ.HGate(1)]), initial;
+        mode=:estimate, observable=MQ.QubitsTerm(1=>"X"), shots=16)
+    @test estimate_report.status === :supported
+    selection_report = MQ.execution_capability(EXACT_BACKEND, MQ.QCircuit([MQ.QSelect(1, 0)]), initial;
+        mode=:estimate, observable=MQ.QubitsTerm(1=>"Z"), shots=16)
+    @test selection_report.status === :unsupported
+    @test MPS.statevector(initial) == original
 end

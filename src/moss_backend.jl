@@ -16,6 +16,39 @@ MatrixProductBackend(; trunc::TruncationScheme=DefaultMPSTruncation) = MatrixPro
 MOSSQuantum.nqubits(state::AbstractMPS) = length(state)
 MOSSQuantum.backend(::AbstractMPS) = MatrixProductBackend()
 
+function MOSSQuantum.execution_capability_backend(::MatrixProductBackend,
+                                                   state::AbstractMPS; mode, method)
+    return MOSSQuantum.CapabilityStep(:supported, (typeof(state),))
+end
+
+function MOSSQuantum.execution_capability_step(::MatrixProductBackend, operation,
+                                                ::Type{S}; mode, method) where {S<:AbstractMPS}
+    if operation isa MOSSQuantum.Gate && MOSSQuantum.nqubits(operation) >= 1
+        # Local operations may change element type; the representation family
+        # is the stable information needed for later instructions.
+        return MOSSQuantum.CapabilityStep(:supported,
+            (S <: MPS ? MPS : DensityOperatorMPS,))
+    elseif operation isa MOSSQuantum.QuantumMap
+        if mode === :execute && !MOSSQuantum.is_tp(operation)
+            return MOSSQuantum.CapabilityStep(:unsupported;
+                reason="execute requires trace-preserving channels")
+        elseif mode === :simulate && !MOSSQuantum.is_tp(operation)
+            return MOSSQuantum.CapabilityStep(:unknown;
+                reason="acceptance of non-trace-preserving maps depends on the simulation path")
+        end
+        return MOSSQuantum.CapabilityStep(:supported, (DensityOperatorMPS,))
+    elseif operation isa MOSSQuantum.QMeasure && operation.keep
+        return MOSSQuantum.CapabilityStep(:supported, (S,))
+    elseif operation isa MOSSQuantum.QSelect
+        return MOSSQuantum.CapabilityStep(:supported, (S,))
+    elseif operation isa MOSSQuantum.Delay && mode !== :apply
+        return MOSSQuantum.CapabilityStep(:unknown;
+            reason="Delay support depends on the selected experiment path")
+    end
+    return MOSSQuantum.CapabilityStep(:unsupported;
+        reason="$(typeof(operation)) is not implemented for MPS in $mode")
+end
+
 function MOSSQuantum.supports(::MatrixProductBackend, operation, ::AbstractMPS; action::Symbol=:apply)
     if action === :apply
         return (operation isa MOSSQuantum.Gate && MOSSQuantum.nqubits(operation) >= 1) ||
@@ -127,6 +160,35 @@ function _moss_probabilities(state::AbstractMPS, qubits)
     return values ./ total
 end
 
+# Terminal sampling is expressed separately from a full marginal distribution.
+# In particular, checking an MPS for sampling must not materialize 2^k values
+# (or the 4^k reduced matrix) for a k-qubit readout.
+struct _MPSTerminalSampler{B,S}
+    backend::B
+    state::S
+    qubits::Vector{Int}
+end
+
+function MOSSQuantum.validate_terminal_sampling(b::MatrixProductBackend,
+                                                state::AbstractMPS, qubits)
+    _moss_readout_qubits(state, qubits)
+    MOSSQuantum.probabilities(b, state; qubits=())
+    return nothing
+end
+
+function MOSSQuantum.prepare_terminal_sampling(b::MatrixProductBackend,
+                                               state::AbstractMPS, qubits)
+    qs = _moss_readout_qubits(state, qubits)
+    return _MPSTerminalSampler(b, state, qs)
+end
+
+function MOSSQuantum.draw_terminal_samples(rng::Random.AbstractRNG,
+                                           sampler::_MPSTerminalSampler,
+                                           shots::Integer)
+    return MOSSQuantum.sample(rng, sampler.state, shots;
+                              qubits=sampler.qubits, backend=sampler.backend)
+end
+
 MOSSQuantum.probabilities(::MatrixProductBackend, state::AbstractMPS; qubits=1:length(state)) =
     _moss_probabilities(state, qubits)
 MOSSQuantum.probabilities(state::AbstractMPS; qubits=1:length(state)) =
@@ -149,7 +211,7 @@ end
 """
 Sample an MPS by sequential conditional measurements without materializing a
 full `2^n` probability distribution. `readout` delegates to MOSSQuantum's shot
-executor, which currently constructs the requested marginal distribution.
+executor, which uses the same backend terminal-sampling protocol.
 """
 function MOSSQuantum.sample(rng::Random.AbstractRNG, state::AbstractMPS, shots::Integer;
                             qubits=1:length(state), readout=nothing,
