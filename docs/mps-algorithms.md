@@ -38,3 +38,9 @@ To migrate existing code, replace `using FiniteMPSAlgorithms` with
 `using FiniteMPSAlgorithms.Models` with
 `using MOSSQuantumMPS.MPSAlgorithms.Models`. The source package name and UUID
 have not changed; `MOSSQuantumMPS` is the only MPS package required.
+
+`sector_ground_state` adds exact two-component charge-sector DMRG to the same
+MPS/MPO types. See [charge-sector optimization and conditional sampling](sector-dmrg.md)
+for bond-charge labels, explicit RNGs, convergence diagnostics, and allocation
+budgets. `sample(rng, psi, N)` supports nonuniform dimensions and arbitrary MPS
+gauges without modifying its input.

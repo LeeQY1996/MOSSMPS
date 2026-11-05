@@ -32,6 +32,7 @@ include("helpers.jl")
 		include("algorithms/tebd.jl")
 		include("algorithms/seq2seq.jl")
 		include("algorithms/sampling.jl")
+		include("algorithms/sector_dmrg.jl")
 		include("algorithms/experimental.jl")
 	end
 end

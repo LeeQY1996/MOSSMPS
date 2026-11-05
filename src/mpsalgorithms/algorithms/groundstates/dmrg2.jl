@@ -20,22 +20,40 @@ struct TwoSiteHeff{W1<:Union{MPOTensor,SchurMPOTensor},
 	right::Array{T,3}
 end
 
-function ac2_prime(x::AbstractArray{T,4}, heff::TwoSiteHeff) where {T}
-	# x[aL, p1, p2, aR]; W1[aLw, p1o, b, p1i], W2[b, p2o, aRw, p2i]
-	W1, W2 = heff.W1, heff.W2
-	hl, hr = heff.left, heff.right
-	@tensor Wcomb[aLw, p1o, p2o, aRw, p1i, p2i] := W1[aLw, p1o, b, p1i] * W2[b, p2o, aRw, p2i]
-	@tensor m1[aL, q1, q2, wR, c] := x[aL, q1, q2, r] * hr[c, wR, r]
-	@tensor m2[aL, wL, p1o, p2o, c] := m1[aL, q1, q2, wR, c] * Wcomb[wL, p1o, p2o, wR, q1, q2]
-	@tensor y[aL, p1o, p2o, c] := hl[aL, wL, b] * m2[b, wL, p1o, p2o, c]
-	return y
+"""
+    two_site_memory_estimate(x, heff)
+
+Conservative bytes for the sequential two-site action, including dense site
+copies for Schur tensors. This estimate has no `W_L*W_R*d1^2*d2^2` object.
+"""
+function two_site_memory_estimate(x, heff::TwoSiteHeff)
+    W1, W2 = heff.W1, heff.W2
+    Dl, d1, d2, Dr = size(x)
+    Db = size(heff.right, 1)
+    wl, wm, wr = space_l(W1), space_r(W1), space_r(W2)
+    d1o, d2o = phydim(W1), phydim(W2)
+    objects = big(Dl)*d1*d2*wr*Db + big(Dl)*d1*d2o*wm*Db +
+              big(Dl)*wl*d1o*d2o*Db + big(size(heff.left,1))*d1o*d2o*Db + length(x)
+    W1 isa SchurMPOTensor && (objects += big(wl)*d1o*wm*d1)
+    W2 isa SchurMPOTensor && (objects += big(wm)*d2o*wr*d2)
+    return objects * sizeof(promote_type(eltype(x), scalartype(W1), scalartype(W2)))
 end
 
-# sparse MPO tensors: densify both sites (a wrapper copy each) and take the dense path
-function ac2_prime(x::AbstractArray{T,4},
-				   heff::TwoSiteHeff{<:SchurMPOTensor,<:SchurMPOTensor}) where {T}
-	return ac2_prime(x, TwoSiteHeff(tompotensor(heff.W1), tompotensor(heff.W2),
-									heff.left, heff.right))
+function ac2_prime(x::AbstractArray{T,4}, heff::TwoSiteHeff;
+                   memory_budget::Integer=typemax(Int)) where {T}
+    required = two_site_memory_estimate(x, heff)
+    required <= memory_budget || throw(ArgumentError(
+        "two-site contraction requires approximately $required bytes, budget=$memory_budget"))
+    W1 = heff.W1 isa SchurMPOTensor ? tompotensor(heff.W1) : heff.W1
+    W2 = heff.W2 isa SchurMPOTensor ? tompotensor(heff.W2) : heff.W2
+    hl, hr = heff.left, heff.right
+    # Contract with the state before joining MPO bonds. In particular, never
+    # construct Wcomb[wl,p1o,p2o,wr,p1i,p2i].
+    @tensor m1[b, q1, q2, wr, c] := x[b, q1, q2, r] * hr[c, wr, r]
+    @tensor m2[b, q1, p2, wm, c] := m1[b, q1, q2, wr, c] * W2[wm, p2, wr, q2]
+    @tensor m3[b, wl, p1, p2, c] := m2[b, q1, p2, wm, c] * W1[wl, p1, wm, q1]
+    @tensor y[a, p1, p2, c] := hl[a, wl, b] * m3[b, wl, p1, p2, c]
+    return y
 end
 
 # ---------- algorithm type ----------
@@ -102,10 +120,17 @@ function _dmrg2_local_update!(env::DMRGCache, s::Integer, alg::DMRG2; move_right
 	W1, W2 = env.H[s], env.H[s+1]
 	heff = TwoSiteHeff(W1, W2, env.hstorage[s], env.hstorage[s+2])
 
+	# Check the tensor and Krylov vectors before constructing the pair tensor.
+	A, B = env.ket[s], env.ket[s+1]
+	entries = big(size(A,1))*size(A,2)*size(B,2)*size(B,3)
+	nvectors = hasproperty(alg.alg_eigsolve, :krylovdim) ? alg.alg_eigsolve.krylovdim + 5 : 40
+	required = entries * sizeof(scalartype(env.ket)) * nvectors
+	required <= alg.memory_budget || throw(ArgumentError(
+		"two-site tensor and Krylov vectors require approximately $required bytes, budget=$(alg.memory_budget)"))
 	# initial guess: the two-site tensor formed from the current site tensors
 	@tensor guess[aL, p1, p2, aR] := env.ket[s][aL, p1, b] * env.ket[s+1][b, p2, aR]
 
-	vals, vecs, info = eigsolve(y -> ac2_prime(y, heff), guess, 1, :SR, alg.alg_eigsolve)
+	vals, vecs, info = eigsolve(y -> ac2_prime(y, heff; memory_budget=alg.memory_budget), guess, 1, :SR, alg.alg_eigsolve)
 	Ψ = vecs[1]
 	E = real(vals[1])
 

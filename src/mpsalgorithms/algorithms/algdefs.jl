@@ -83,6 +83,7 @@ carry the gauge themselves, so no QR/LQ moves consume it.
 	alg_eigsolve::E = Defaults.alg_eigsolve()
 	alg_orth::O = Defaults.alg_orth()
 	verbosity::Int = 0
+	memory_budget::Int = 2^30
 end
 
 """

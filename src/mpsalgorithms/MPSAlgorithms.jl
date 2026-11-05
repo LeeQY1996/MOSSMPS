@@ -1,6 +1,7 @@
 module MPSAlgorithms
 
 using LinearAlgebra
+using Random
 using LinearAlgebra: BlasFloat
 using Printf
 using TensorOperations
@@ -62,7 +63,8 @@ export mult, add, compress, compress!,
 	iterative_compute!, AddCache, MultCache, HadamardCache, LinsolveCache, Seq2SeqCache,
 	TDVPCache, HadamardTDVPCache,
 	WI, WII, ComplexStepper, complex_stepper, TaylorCluster, timeevompo, timeevo, timeevo!,
-	linsolve, seq2seq, seq2seq!, sample, amplitude,
+	linsolve, seq2seq, seq2seq!, sample, amplitude, sampling_right_environments,
+    sector_ground_state, sector_leakage, two_site_memory_estimate,
 	DMRGCache, ExcitedStateCache, OverlapCache,
 	TraceCache,
 	# experimental

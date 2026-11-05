@@ -37,7 +37,7 @@
 	@test tvs[3] < tvs[2]
 	@test tvs[end] < 0.1
 
-	# uninitialized Schmidt values: canonicalized in place before sampling
+	# uninitialized Schmidt values: input remains untouched during sampling
 	ψu = randommps(ComplexF64, ds; D=4)
 	unset_svectors!(ψu)
 	s = sample(ψu, 2_000)
@@ -48,5 +48,5 @@
 		p_emp[flat(𝐱)] += 1.0 / 2_000
 	end
 	@test tv(p_emp, p_exact) < 0.1
-	@test iscanonical(ψu)
+	@test svectors_uninitialized(ψu)
 end

@@ -1,57 +1,96 @@
 # direct sampling of configuration amplitudes from a canonical MPS (Born distribution)
 
 """
-	sample(ψ::CanonicalMPS, N::Integer) -> Vector{Vector{Int}}
+    sample(rng::AbstractRNG, ψ::CanonicalMPS, N::Integer; atol=1e-12)
+    sample(ψ::CanonicalMPS, N::Integer; atol=1e-12)
 
-Draw `N` configuration samples `𝐱 = (x₁, …, x_L)` from `ψ` by direct sequential
-sampling: the chain is swept right to left, at each site the conditional distribution
-over the local index is obtained from the stored bond spectrum
-(`P(x_s, aL | suffix) ∝ s[s][aL]²·‖A_s[aL, x_s, :]·w‖²` with `w` the sampled-suffix
-amplitude vector), and one index is drawn per site.
-
-Samples follow the package's **1-based convention**: `x[s] ∈ 1:ds[s]` for every site.
-
-!!! warning "assumptions"
-	The function ASSUMES that `ψ` is right-canonical and represents a PURE quantum
-	state: samples follow the Born distribution `P(𝐱) = |ψ(𝐱)|²`. It must not be used
-	on chains meant as classical (high-dimensional) probability distributions. If the
-	Schmidt values are uninitialized, `ψ` is canonicalized in place first (without
-	truncation).
+Draw Born samples with one-based local indices for arbitrary (also nonuniform)
+physical dimensions. `ψ` may have any gauge and any finite nonzero normalization;
+it is never canonicalized or modified. The method contracts normalized right norm
+environments and rescales each sampled prefix. It does not use stored Schmidt
+values, expand the state, or silently accept an all-zero conditional distribution.
+The legacy overload uses `Random.default_rng()`.
 """
-function sample(ψ::CanonicalMPS, N::Integer)
-	svectors_uninitialized(ψ) && canonicalize!(ψ; alg=Orthogonalize(SVD(), NoTruncation(), false))
-	L = length(ψ)
-	T = scalartype(ψ)
-	samples = Vector{Vector{Int}}(undef, N)
-	for n in 1:N
-		x = Vector{Int}(undef, L)
-		w = ones(T, 1)                     # sampled-suffix amplitude (empty at bond L)
-		for s in L:-1:1
-			A = ψ[s]
-			D, d = size(A, 1), size(A, 2)
-			λ = ψ.s[s]                     # spectrum at bond s-1 (boundary ones(1) at s = 1)
-			# joint weights over (aL, x_s): λ[aL]²·‖A_s[aL, x_s, :]·w‖²
-			m = reshape(A, D * d, size(A, 3)) * w
-			p = vec(reshape(abs2.(m), D, d) .* abs2.(λ))
-			# one categorical draw by cumulative search (column-major: aL fastest)
-			r = rand() * sum(p)
-			c = zero(r)
-			idx = length(p)
-			for i in eachindex(p)
-				c += p[i]
-				if r <= c
-					idx = i
-					break
-				end
-			end
-			# the drawn aL is a sampling aid only: the suffix vector contracts the FULL
-			# local index (the left weight re-enters through the next bond spectrum)
-			x[s] = (idx - 1) ÷ D + 1
-			w = reshape(A[:, x[s], :], D, size(A, 3)) * w
-		end
-		samples[n] = x
-	end
-	return samples
+function sample(rng::AbstractRNG, ψ::CanonicalMPS, N::Integer; atol::Real=1e-12)
+    N >= 0 || throw(ArgumentError("sample count must be nonnegative"))
+    isfinite(atol) && atol >= 0 || throw(ArgumentError("atol must be finite and nonnegative"))
+    isfinite(scaling(ψ)) && !iszero(scaling(ψ)) ||
+        throw(ArgumentError("sampling requires a finite nonzero state scale"))
+    R = sampling_right_environments(ψ)
+    L = length(ψ)
+    T = scalartype(ψ)
+    samples = Vector{Vector{Int}}(undef, N)
+    for n in 1:N
+        x = Vector{Int}(undef, L)
+        v = ones(T, 1)
+        for s in 1:L
+            A = ψ[s]
+            d, Dr = size(A, 2), size(A, 3)
+            candidates = Matrix{T}(undef, Dr, d)
+            weights = Vector{Float64}(undef, d)
+            for p in 1:d
+                w = vec(transpose(v) * view(A, :, p, :))
+                candidates[:, p] = w
+            end
+            candidate_scale = maximum(abs, candidates)
+            isfinite(candidate_scale) && candidate_scale > 0 ||
+                throw(ArgumentError("zero or non-finite prefix at site $s"))
+            candidates ./= candidate_scale
+            for p in 1:d
+                w = view(candidates, :, p)
+                z = dot(w, R[s+1] * w)
+                abs(imag(z)) <= atol * max(1, abs(real(z))) ||
+                    throw(ArgumentError("non-real Born weight; invalid right environment"))
+                real(z) >= -atol || throw(ArgumentError("negative Born weight"))
+                weights[p] = max(0.0, real(z))
+            end
+            total = sum(weights)
+            isfinite(total) && total > 0 ||
+                throw(ArgumentError("zero or non-finite conditional norm at site $s"))
+            threshold = rand(rng) * total
+            cumulative = 0.0
+            selected = findlast(>(0), weights)
+            for p in eachindex(weights)
+                cumulative += weights[p]
+                if threshold < cumulative
+                    selected = p
+                    break
+                end
+            end
+            x[s] = selected
+            v = candidates[:, selected]
+            scale = maximum(abs, v)
+            isfinite(scale) && scale > 0 || throw(ArgumentError("invalid sampled prefix"))
+            v ./= scale
+        end
+        samples[n] = x
+    end
+    return samples
+end
+sample(ψ::CanonicalMPS, N::Integer; kwargs...) = sample(Random.default_rng(), ψ, N; kwargs...)
+
+"""
+    sampling_right_environments(ψ)
+
+Right norm environments `R[s][bra,ket]` for sites `s:L`, individually rescaled
+by a positive scalar to avoid long-chain underflow. Their scalar normalizations
+cancel in conditional probabilities. Does not modify `ψ`.
+"""
+function sampling_right_environments(ψ::CanonicalMPS)
+    T = scalartype(ψ)
+    R = Vector{Matrix{T}}(undef, length(ψ)+1)
+    R[end] = ones(T, 1, 1)
+    for s in length(ψ):-1:1
+        all(isfinite, ψ[s]) || throw(ArgumentError("non-finite MPS tensor"))
+        tensor_scale = maximum(abs, ψ[s])
+        tensor_scale > 0 || throw(ArgumentError("sampling requires nonzero tensors"))
+        A = ψ[s] ./ tensor_scale
+        R[s] = _updateright(R[s+1], A, A)
+        scale = maximum(abs, R[s])
+        isfinite(scale) && scale > 0 || throw(ArgumentError("sampling requires a nonzero finite state"))
+        R[s] ./= scale
+    end
+    return R
 end
 
 """
