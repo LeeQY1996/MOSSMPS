@@ -1,6 +1,8 @@
 # MOSSMPS
 
-[家族图标与字标](https://leeqy1996.github.io/MOSSQuantum/branding.html)
+<img src="docs/assets/brand/moos-qubit-grid.png" alt="MOOS 家族展示图标" width="192">
+
+[图标与品牌素材](https://leeqy1996.github.io/MOSSQuantum/branding.html)
 
 [在线 API 文档](https://leeqy1996.github.io/MOSSMPS/) · [API 与函数参考源文件](docs/api.md)
 

@@ -1,8 +1,10 @@
 # MOSSMPS 文档
 
+<img src="assets/brand/moos-qubit-grid.png" alt="MOOS 家族展示图标" width="200">
+
 MPS 模拟后端、张量链、DMRG、TDVP、压缩与严格电荷扇区。
 
-[API 与函数索引](api.md) · [安装与快速开始](../README.md) · [GitHub 仓库](https://github.com/LeeQY1996/MOSSMPS) · [家族图标与字标](https://leeqy1996.github.io/MOSSQuantum/branding.html)
+[API 与函数索引](api.md) · [安装与快速开始](../README.md) · [GitHub 仓库](https://github.com/LeeQY1996/MOSSMPS) · [图标与品牌素材](https://leeqy1996.github.io/MOSSQuantum/branding.html)
 
 ## 使用这份参考
 
