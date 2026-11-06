@@ -12,3 +12,5 @@ Depot.jl
 
 # Local development environment
 /Manifest.toml
+/_site/
+/.docs-env/

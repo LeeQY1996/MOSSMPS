@@ -1,0 +1,55 @@
+{
+  "title": "MOSSQuantumMPS",
+  "repository": "MOSSQuantumMPS",
+  "branch": "master",
+  "description": "MPS 模拟后端、张量链、DMRG、TDVP、压缩与严格电荷扇区。",
+  "family": [
+    "MOSSQuantum",
+    "MOSSQuantumMPS",
+    "MOSSQuantumStabilizer",
+    "MOSSQuantumChemistry",
+    "MOSSFragmentTN",
+    "MOSSGPU",
+    "MOSSAlgorithmZoo"
+  ],
+  "sources": [
+    "docs/*.md",
+    "docs/api/*.md",
+    "README.md",
+    "docs/src/*.md"
+  ],
+  "navigation": [
+    [
+      "首页",
+      "docs/index.md"
+    ],
+    [
+      "API / 函数索引",
+      "docs/api.md"
+    ],
+    [
+      "模拟器接口",
+      "docs/api/simulator.md"
+    ],
+    [
+      "张量核心参考",
+      "docs/api/core-reference.md"
+    ],
+    [
+      "算法参考",
+      "docs/api/algorithms-reference.md"
+    ],
+    [
+      "物理模型",
+      "docs/api/models-reference.md"
+    ],
+    [
+      "安装与使用",
+      "README.md"
+    ],
+    [
+      "文档维护",
+      "docs/BUILDING.md"
+    ]
+  ]
+}

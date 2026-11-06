@@ -1,5 +1,7 @@
 # MOSSQuantumMPS
 
+[在线 API 文档](https://leeqy1996.github.io/MOSSQuantumMPS/) · [API 与函数参考源文件](docs/api.md)
+
 MOSSQuantumMPS is an MPS simulator and companion backend for [MOSSQuantum](https://github.com/LeeQY1996/MOSSQuantum). It represents pure states as matrix product states (`MPS`) and mixed states as density-operator MPS (`DensityOperatorMPS`). The shared dense-tensor MPS/MPO foundation lives in `MOSSQuantumMPS.MPSCore`, and higher-level tensor-network algorithms live in `MOSSQuantumMPS.MPSAlgorithms`.
 
 ## Installation for local development
@@ -11,7 +13,7 @@ using Pkg
 Pkg.activate("/path/to/my-mps-environment")
 Pkg.develop([
     PackageSpec(path="/path/to/MOSSQuantum"),
-    PackageSpec(path="/path/to/MOSSMPS"),
+    PackageSpec(path="/path/to/MOSSQuantumMPS"),
 ])
 Pkg.instantiate()
 ```

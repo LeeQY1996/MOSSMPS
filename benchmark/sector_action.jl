@@ -1,7 +1,7 @@
 # Synthetic contraction benchmark; the larger dimensions match the H8 center pair.
 # It tests action equivalence and resource cost, not molecular accuracy.
 # Run from Quantum after preparing the Zoo environment:
-# OPENBLAS_NUM_THREADS=1 julia --project=MOSSAlgorithmZoo MOSSMPS/benchmark/sector_action.jl
+# OPENBLAS_NUM_THREADS=1 julia --project=MOSSAlgorithmZoo MOSSQuantumMPS/benchmark/sector_action.jl
 using LinearAlgebra, Random
 import MOSSQuantumMPS
 const A=MOSSQuantumMPS.MPSAlgorithms
