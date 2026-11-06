@@ -1,5 +1,7 @@
 # MOSSMPS
 
+[家族图标与字标](https://leeqy1996.github.io/MOSSQuantum/branding.html)
+
 [在线 API 文档](https://leeqy1996.github.io/MOSSMPS/) · [API 与函数参考源文件](docs/api.md)
 
 MOSSMPS is an MPS simulator and companion backend for [MOSSQuantum](https://github.com/LeeQY1996/MOSSQuantum). It represents pure states as matrix product states (`MPS`) and mixed states as density-operator MPS (`DensityOperatorMPS`). The shared dense-tensor MPS/MPO foundation lives in `MOSSMPS.MPSCore`, and higher-level tensor-network algorithms live in `MOSSMPS.MPSAlgorithms`.
