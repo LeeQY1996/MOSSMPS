@@ -1,6 +1,6 @@
 # MOSSMPS 文档
 
-<img src="assets/brand/moos-qubit-grid.png" alt="MOOS 家族展示图标" width="200">
+<img src="assets/brand/moss-qubit-grid.png" alt="MOSS 家族展示图标" width="200">
 
 MPS 模拟后端、张量链、DMRG、TDVP、压缩与严格电荷扇区。
 
