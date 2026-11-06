@@ -3,12 +3,12 @@
 [返回 API 目录](../api.md)
 
 
-导入方式：`import MOSSQuantumMPS.MPSAlgorithms as A`。公共基础类型与 `MPSCore` 的对象相同；索引表将再导出项链接到基础层参考。算法新增项在下方分别列出；`experimental/` 来源的条目属于实验接口。
+导入方式：`import MOSSMPS.MPSAlgorithms as A`。公共基础类型与 `MPSCore` 的对象相同；索引表将再导出项链接到基础层参考。算法新增项在下方分别列出；`experimental/` 来源的条目属于实验接口。
 
 `SVDCompression` 通常返回压缩后的对象；反复扫描的算术算法一般返回 `(对象, ALSConvergenceInfo)`，DMRG 返回值请查具体方法，不能以一种返回形状代替全部重载。收敛状态、残差、截断与内存限制均应随结果核查。
 
 ```julia
-import MOSSQuantumMPS.MPSAlgorithms as A
+import MOSSMPS.MPSAlgorithms as A
 psi = A.prodmps(ComplexF64, [2, 2], [1, 1])
 compressed = A.compress(psi, A.SVDCompression(trunc=A.NoTruncation()))
 ```
@@ -229,7 +229,7 @@ ansatz with its own bond profile (ignoring `alg.D` entirely), call
 The exact (strict) product without compression is the operator `⊙` (`ψA ⊙ ψB`).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:327](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L327)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:327](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L327)
 
 
 
@@ -246,7 +246,7 @@ route supply a bond cap: `mult(h, x, DMRG1(; ...); D=D)` — the initial guess i
 by `svdguess_mult(h, x, D)`.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:381](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L381)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:381](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L381)
 
 
 	mult(h, x, alg::DMRG1) -> (chain, info)
@@ -261,7 +261,7 @@ custom ansatz with its own bond profile (ignoring `alg.D` entirely), call
 `ALSConvergenceInfo` of the sweeps (the SVD route returns the chain only).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:394](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L394)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:394](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L394)
 
 
 
@@ -281,7 +281,7 @@ guess and refines it by sweeps, returning `(chain, info)` with `info`, the
 exact sum is `Base.:+` (block-diagonal, no truncation).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:193](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L193)
+源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:193](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L193)
 
 
 
@@ -300,7 +300,7 @@ initial guess and refines it by sweeps, returning `(chain, info)` with `info`, t
 `ALSConvergenceInfo` of the sweeps (the SVD route returns the chain only).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/compress.jl:139](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/compress.jl#L139)
+源码：[src/mpsalgorithms/algorithms/arithmetics/compress.jl:139](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/compress.jl#L139)
 
 
 
@@ -318,7 +318,7 @@ input's external scale is attached through the per-site `scaling` field of the o
 `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/compress.jl:122](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/compress.jl#L122)
+源码：[src/mpsalgorithms/algorithms/arithmetics/compress.jl:122](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/compress.jl#L122)
 
 
 
@@ -335,7 +335,7 @@ truncating right-orthogonalization with bond cap `D` (`truncdim(D)`; the exact p
 itself is never materialized).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:320](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L320)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:320](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L320)
 
 
 
@@ -353,7 +353,7 @@ into every site tensor (per site — a scaling^L power is never formed). The bon
 dimension is capped at `D` (`truncdim(D)`).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:131](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L131)
+源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:131](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L131)
 
 
 
@@ -368,7 +368,7 @@ A truncating SVD re-compression of `x` (bond cap `D`) as an initial guess for th
 iterative `compress` (accurate but costly compared to zero padding).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/compress.jl:111](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/compress.jl#L111)
+源码：[src/mpsalgorithms/algorithms/arithmetics/compress.jl:111](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/compress.jl#L111)
 
 
 
@@ -384,7 +384,7 @@ iterative hadamard (the exact product itself is never materialized). The bond
 dimension is capped at `D` (`truncdim(D)`).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:231](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L231)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:231](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L231)
 
 
 
@@ -405,7 +405,7 @@ the per-site `scaling` field of the output — a scaling^L power is never materi
 Returns `(out, info)` with `info`, the `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:354](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L354)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:354](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L354)
 
 
 
@@ -423,7 +423,7 @@ never materialized). Returns `(out, info)` with `info`, the
 `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:176](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L176)
+源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:176](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L176)
 
 
 
@@ -443,7 +443,7 @@ external scales (a scaling^L power is never materialized). Returns `(x, info)` w
 (residual-norm-squared) residual here, `info.residual` holds the final loss.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:217](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L217)
+源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:217](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L217)
 
 
 
@@ -465,7 +465,7 @@ through the per-site `scaling` field, with the ⊙ convention
 Returns `(χ, info)` with `info`, the `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:295](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L295)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:295](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L295)
 
 
 
@@ -486,7 +486,7 @@ Observables on the original Hamiltonian picture are evaluated with
 Hamiltonian's Pauli-term expectations.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:408](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L408)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:408](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L408)
 
 
 	ground_state(h::MPOHamiltonian, alg=DMRG1()) -> (E, ψ, info)
@@ -496,7 +496,7 @@ random initial state of bond dimension `alg.D`; `info` is the
 `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:140](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L140)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:140](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L140)
 
 
 	ground_state(h::MPOHamiltonian, alg::DMRG2) -> (E, ψ, info)
@@ -505,7 +505,7 @@ Ground-state energy and state of `h` found by two-site DMRG, starting from a ran
 of bond `Defaults.D`; `info` is the `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:174](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L174)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:174](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L174)
 
 
 
@@ -526,7 +526,7 @@ Clifford circuits together with the state, use `ground_state(h, alg)` which retu
 `CAMPS`.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:387](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L387)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:387](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L387)
 
 
 	ground_state!(ψ::CanonicalMPS, h::AbstractMPO, alg::DMRG1=DMRG1()) -> info
@@ -539,7 +539,7 @@ data-normalized: the external scale is reset through the `scaling` field, never
 materialized as a scaling^L power.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:121](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L121)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:121](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L121)
 
 
 	ground_state!(ψ::CanonicalMPS, h::AbstractMPO, alg::DMRG2) -> info
@@ -550,7 +550,7 @@ the `ALSConvergenceInfo` of the sweeps (`info.losses` is the per-sweep
 local-energy history).
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:158](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L158)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:158](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L158)
 
 
 
@@ -566,7 +566,7 @@ random initial state of bond dimension `alg.D`; `info` is the
 `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:138](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L138)
+源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:138](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L138)
 
 
 
@@ -584,7 +584,7 @@ Returns `info`, the `ALSConvergenceInfo` of the sweeps (`info.losses` is the
 per-sweep local-energy history).
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:122](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L122)
+源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:122](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L122)
 
 
 
@@ -602,7 +602,7 @@ site fuses `(Cleft · ψA · ψB)` once and uses the fused tensor both for the t
 (with the updated bra) for the next environment.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:170](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L170)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:170](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L170)
 
 
 	leftsweep!(m::LinsolveCache, alg::ALSLinSolve) -> kvals
@@ -613,7 +613,7 @@ the chain is moved by QR and both environment stacks incremented. `kvals` collec
 exact global residual² ‖A·x − y‖² after every site update (non-increasing).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:136](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L136)
+源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:136](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L136)
 
 
 	leftsweep!(m::MultCache, alg::DMRG1) -> kvals
@@ -624,7 +624,7 @@ contraction `Cleft · imps · mpo · Cright`; the bra is moved by QR and the los
 the fused tensor both for the target and (with the updated bra) for the next environment.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:168](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L168)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:168](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L168)
 
 
 	leftsweep!(env::CADMRGCache, alg::CADMRG) -> kvals
@@ -636,7 +636,7 @@ right-canonical and the precomputed right environments remain valid. Every appli
 Clifford circuit is recorded on `env.gates`.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:336](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L336)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:336](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L336)
 
 
 	leftsweep!(env::ThermalDMRGCache, alg::PDMRG; β) -> fvals
@@ -649,7 +649,7 @@ neighbouring sites (`_merged_left_move!`) so the local effective Hamiltonian can
 support rank `R` again.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:407](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L407)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:407](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L407)
 
 
 	leftsweep!(c::ALSReconCache, alg::ALSRecon) -> kvals
@@ -659,7 +659,7 @@ solves, QR gauge moves, left-context and ridge transfers. `kvals[s]` is the exac
 global data objective after updating site `s` (non-increasing; the ridge is excluded).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:300](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L300)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:300](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L300)
 
 
 	leftsweep!(env::DMRGCache, alg::DMRG1) -> kvals
@@ -669,7 +669,7 @@ One left-to-right DMRG1 sweep: at each site the single-site effective Hamiltonia
 the center moved by QR, and the environment incremented. Returns the per-site local energies.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:60](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L60)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:60](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L60)
 
 
 	leftsweep!(env::DMRGCache, alg::DMRG2) -> kvals
@@ -679,7 +679,7 @@ absorbs the singular values into site s+1 (the new orthogonality center); the sw
 tensors stay left-canonical, the not-yet-swept tensors stay right-canonical.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:65](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L65)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:65](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L65)
 
 
 	leftsweep!(env::ExcitedStateCache, alg::DMRG1) -> kvals
@@ -692,7 +692,7 @@ subspace orthogonal to all `ψ₀⁽ˡ⁾` it coincides with `H_eff`, i.e. the s
 problem.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:43](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L43)
+源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:43](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L43)
 
 
 	leftsweep!(m::Seq2SeqCache, alg) -> kvals
@@ -702,7 +702,7 @@ the chain is moved by QR and all three environment stacks are incremented. `kval
 collects the exact global data objective after every site update.
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:222](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L222)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:222](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L222)
 
 
 	leftsweep!(env::HadamardTDVPCache, alg::HadamardTDVP) -> Float64[]
@@ -713,7 +713,7 @@ Left half of one Hadamard-flow step: every site tensor (including the last) evol
 follow the updated state — the same skeleton as the `TDVP1` left sweep.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:224](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L224)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:224](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L224)
 
 
 	leftsweep!(env::HadamardTDVPCache, alg::HadamardTDVP2) -> Float64[]
@@ -725,7 +725,7 @@ last pair — by the single-site backward half-step `exp(-dt/2·H_site)` on the 
 The environments follow the updated state.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:322](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L322)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:322](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L322)
 
 
 	leftsweep!(env, alg::TDVP1) -> Float64[]
@@ -736,7 +736,7 @@ environments anchored at the bond). The gauge moves are those of the manifold of
 `env`'s state (MPS leg groups `(1, 2) | (3,)`, density-operator ones `(1, 2, 4) | (3,)`).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:343](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L343)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:343](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L343)
 
 
 	leftsweep!(env, alg::TDVP2)
@@ -747,7 +747,7 @@ followed — except for the last pair — by the single-site backward half-step
 `exp(-dt/2·H_site)` on the new center. The environments follow the updated state.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:503](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L503)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:503](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L503)
 
 
 
@@ -762,7 +762,7 @@ ALS right sweep (symmetric to `leftsweep!`, LQ gauge moves). `kvals` is ordered 
 processing time (sites `L, L-1, …, 1`); the losses are non-decreasing.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:199](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L199)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:199](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L199)
 
 
 	rightsweep!(m::LinsolveCache, alg::ALSLinSolve) -> kvals
@@ -772,7 +772,7 @@ time — sites `L, L-1, …, 1` — and collects the exact global residual² ‖
 every site update (non-increasing).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:164](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L164)
+源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:164](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L164)
 
 
 	rightsweep!(m::MultCache, alg::DMRG1) -> kvals
@@ -782,7 +782,7 @@ ALS right sweep for the `mult` problem (symmetric to `leftsweep!`, LQ gauge move
 `(Cright · imps · mpo)` serve the target and the next environment alike.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:196](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L196)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:196](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L196)
 
 
 	rightsweep!(env::CADMRGCache, alg::CADMRG) -> kvals
@@ -792,7 +792,7 @@ into the left site of each pair, keeping the already-swept tensors right-canonic
 Every applied Clifford circuit is recorded on `env.gates`.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:360](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L360)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:360](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L360)
 
 
 	rightsweep!(env::ThermalDMRGCache, alg::PDMRG; β) -> fvals
@@ -801,7 +801,7 @@ Right-to-left p-DMRG sweep (symmetric to `leftsweep!`, with merged boundary upda
 the left edge).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:462](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L462)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:462](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L462)
 
 
 	rightsweep!(c::ALSReconCache, alg::ALSRecon) -> kvals
@@ -810,7 +810,7 @@ Right-to-left ALS sweep (symmetric, LQ gauge moves). `kvals` is ordered by proce
 time (sites `L, …, 1`); the losses are non-increasing.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:327](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L327)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:327](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L327)
 
 
 	rightsweep!(env::DMRGCache, alg::DMRG1) -> kvals
@@ -819,7 +819,7 @@ One right-to-left DMRG1 sweep (symmetric to `leftsweep!`, LQ gauge moves). `kval
 ordered by processing time — sites `L, L-1, …, 1`.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:83](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L83)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:83](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L83)
 
 
 	rightsweep!(env::DMRGCache, alg::DMRG2) -> kvals
@@ -831,7 +831,7 @@ bond and are recorded on the state (`ket.s[bond+1]`); the final center (site 1) 
 normalized, so the returned MPS satisfies `iscanonical`.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:85](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L85)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:85](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L85)
 
 
 	rightsweep!(env::ExcitedStateCache, alg::DMRG1) -> kvals
@@ -840,7 +840,7 @@ One right-to-left projected DMRG1 sweep. `kvals` is ordered by processing time �
 sites `L, L-1, …, 1`.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:69](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L69)
+源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:69](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L69)
 
 
 	rightsweep!(m::Seq2SeqCache, alg) -> kvals
@@ -849,7 +849,7 @@ One right-to-left ALS sweep (symmetric, LQ gauge moves). `kvals` is ordered by p
 time (sites `L, L-1, …, 1`); the losses are non-increasing.
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:248](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L248)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:248](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L248)
 
 
 	rightsweep!(env::HadamardTDVPCache, alg::HadamardTDVP) -> Float64[]
@@ -857,7 +857,7 @@ time (sites `L, L-1, …, 1`); the losses are non-increasing.
 Right half of one Hadamard-flow step (symmetric to `leftsweep!`).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:247](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L247)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:247](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L247)
 
 
 	rightsweep!(env::HadamardTDVPCache, alg::HadamardTDVP2) -> Float64[]
@@ -866,7 +866,7 @@ Right half of one two-site Hadamard step (symmetric to `leftsweep!`, singular
 values absorbed into the left site of each pair).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:347](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L347)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:347](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L347)
 
 
 	rightsweep!(env, alg::TDVP1) -> Float64[]
@@ -875,7 +875,7 @@ Right half of one TDVP1 time step (symmetric to `leftsweep!`, the gauge moves ru
 right-to-left).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:366](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L366)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:366](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L366)
 
 
 	rightsweep!(env, alg::TDVP2)
@@ -884,7 +884,7 @@ Right half of one TDVP2 step (symmetric to `leftsweep!`, singular values absorbe
 left site of each pair).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:527](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L527)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:527](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L527)
 
 
 
@@ -898,7 +898,7 @@ left site of each pair).
 One full DMRG1 sweep: `leftsweep!` followed by `rightsweep!`.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:107](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L107)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:107](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L107)
 
 
 	sweep!(env::HadamardTDVPCache, alg::HadamardTDVP)
@@ -908,7 +908,7 @@ i.e. the elementwise `env.state ↦ exp(stepsize·env.H) .* env.state`. Time-evo
 are driven by the caller: repeat `sweep!(env, alg)`.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:267](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L267)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:267](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L267)
 
 
 	sweep!(env::HadamardTDVPCache, alg::HadamardTDVP2)
@@ -917,7 +917,7 @@ One full two-site Hadamard time step of size `alg.stepsize` (`leftsweep!` + `rig
 adapting the bond dimensions under `alg.trunc`.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:369](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L369)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:369](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L369)
 
 
 	sweep!(env, alg::TDVP1)
@@ -926,7 +926,7 @@ One full TDVP1 time step of size `alg.stepsize` (`leftsweep!` + `rightsweep!`).
 Time evolution loops are driven by the caller: repeat `sweep!(env, alg)`.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:387](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L387)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:387](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L387)
 
 
 	sweep!(env, alg::TDVP2)
@@ -934,7 +934,7 @@ Time evolution loops are driven by the caller: repeat `sweep!(env, alg)`.
 One full TDVP2 time step of size `alg.stepsize` (`leftsweep!` + `rightsweep!`).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:549](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L549)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:549](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L549)
 
 
 
@@ -949,7 +949,7 @@ Parameters of the SVD-sweep (one-pass) compression route: the exact product is f
 and then compressed by an SVD right-orthogonalization sweep under the scheme `trunc`.
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:22](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L22)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:22](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L22)
 
 
 
@@ -976,7 +976,7 @@ effective-Hamiltonian `eigsolve`, and `alg_orth` (a tensor factorization such as
 moves use the adjoint `alg_orth'`.
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:33](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L33)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:33](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L33)
 
 
 
@@ -1004,7 +1004,7 @@ two-site re-splits are truncating SVDs under `alg.trunc` (factorization `SDD`) a
 carry the gauge themselves, so no QR/LQ moves consume it.
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:60](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L60)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:60](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L60)
 
 
 
@@ -1049,7 +1049,7 @@ of an isometric chain; `vectorize(infinite_temperature_state(...))` is not (its 
 tensors are the plain identities) and needs a `rightorth!` (SVD, `NoTruncation`) first.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:26](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L26)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:26](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L26)
 
 
 
@@ -1113,7 +1113,7 @@ next-nearest-neighbour test model at L = 4 a β = 1 cooling comes out at 2.3e-3,
 produces. Once the profile has grown, only the truncation under `trunc` remains.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:71](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L71)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:71](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L71)
 
 
 
@@ -1155,7 +1155,7 @@ accumulate the exact flow. On a restricted manifold the sweep realizes the proje
 instead, which leaves a remainder linear in `stepsize` (halving `stepsize` halves it).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:37](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L37)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:37](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L37)
 
 
 
@@ -1187,7 +1187,7 @@ by default), and the generator's `scaling` is folded into the local generators a
 factor `scaling(H)^L`. The sweeps are documented with their implementations below.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:78](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L78)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:78](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L78)
 
 
 
@@ -1231,7 +1231,7 @@ entry point:
   the residual at all).
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:134](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L134)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:134](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L134)
 
 
 
@@ -1246,7 +1246,7 @@ Abstract base of the single-site (ALS) sweep engines: `DMRG1`, `ALSLinSolve`,
 `ALSRecon` and `Seq2Seq`.
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:6](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L6)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:6](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L6)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -1268,7 +1268,7 @@ Abstract base of the two-site sweep engines: `DMRG2` (the concrete `ALSLinSolve2
 `CADMRG` and `PDMRG`.
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:14](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L14)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:14](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L14)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -1293,7 +1293,7 @@ are solved by the KrylovKit iterative solver `alg.alg_linsolve` (matrix-free, th
 site-pair tensor as warm start).
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:106](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L106)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:106](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L106)
 
 
 
@@ -1314,7 +1314,7 @@ oracle-based entry point `seq2seq(pairfun, dxs, dys, alg)` (unused by the
 fixed-dataset entry points).
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:16](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L16)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:16](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L16)
 
 
 
@@ -1332,7 +1332,7 @@ solved by the KrylovKit iterative solver `alg.alg_linsolve` (matrix-free, the cu
 site tensor as warm start).
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:89](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L89)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:89](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L89)
 
 
 
@@ -1349,7 +1349,7 @@ the large dimensions — are contracted first, against the small physical legs a
 bonds of `W`; the MPO bonds are folded in afterwards through the environments.
 
 
-源码：[src/mpsalgorithms/algorithms/derivatives.jl:3](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/derivatives.jl#L3)
+源码：[src/mpsalgorithms/algorithms/derivatives.jl:3](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/derivatives.jl#L3)
 
 
 
@@ -1364,7 +1364,7 @@ Bond-space effective Hamiltonian action (the second TDVP1 projector):
 `y[a, c] = Σ hleft[a, w, b] x[b, e] hright[c, w, e]`.
 
 
-源码：[src/mpsalgorithms/algorithms/derivatives.jl:59](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/derivatives.jl#L59)
+源码：[src/mpsalgorithms/algorithms/derivatives.jl:59](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/derivatives.jl#L59)
 
 
 
@@ -1380,7 +1380,7 @@ site tensor keeps its own form (dense or Schur), and the repeated `eigsolve` act
 dispatch on it.
 
 
-源码：[src/mpsalgorithms/algorithms/derivatives.jl:90](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/derivatives.jl#L90)
+源码：[src/mpsalgorithms/algorithms/derivatives.jl:90](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/derivatives.jl#L90)
 
 
 
@@ -1462,12 +1462,12 @@ values; the cache constructors therefore reset them (`unset_svectors!`) on the w
 guess, so no stale spectrum can masquerade as a canonical gauge.
 
 Logging follows the package-wide `verbosity` convention (header of
-`MOSSQuantumMPS.MPSAlgorithms`): level ≥ 2 summarizes the final (best) loss of every sweep
+`MOSSMPS.MPSAlgorithms`): level ≥ 2 summarizes the final (best) loss of every sweep
 (`_logiter`); level ≥ 3 additionally prints the loss of every local update from within
 the sweeps, tagged with the half-sweep direction (`_logupdate`).
 
 
-源码：[src/mpsalgorithms/algorithms/algdefs.jl:164](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L164)
+源码：[src/mpsalgorithms/algorithms/algdefs.jl:164](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/algdefs.jl#L164)
 
 
 
@@ -1482,7 +1482,7 @@ Build the `AddCache` of the iterative `add`: every per-input overlap environment
 (`OverlapCache`) is constructed and initialized here.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:38](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L38)
+源码：[src/mpsalgorithms/algorithms/arithmetics/add.jl:38](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/add.jl#L38)
 
 
 
@@ -1495,7 +1495,7 @@ MultCache: the ALS "problem" carrier of `mult` — find the bra chain `bra` maxi
 `|⟨bra| H |ket⟩|` (single-site alternating sweeps).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:74](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L74)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:74](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L74)
 
 
 	MultCache(bra, h, x)
@@ -1506,7 +1506,7 @@ performed on any chain, and `alg.D` is ignored. Callers provide a right-canonica
 (the `mult!` driver never re-gauges or truncates it).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:336](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L336)
+源码：[src/mpsalgorithms/algorithms/arithmetics/mult.jl:336](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/mult.jl#L336)
 
 
 
@@ -1519,7 +1519,7 @@ HadamardCache: the ALS "problem" carrier of the iterative hadamard product — f
 chain `omps` maximizing `|⟨omps| ψA ⊙ ψB⟩|` by single-site alternating sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:84](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L84)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:84](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L84)
 
 
 	HadamardCache(bra, ketx, kety)
@@ -1530,7 +1530,7 @@ regularization is performed on any chain, and `alg.D` is ignored. Callers provid
 right-canonical `bra` (the `hadamard!` driver never re-gauges or truncates it).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:277](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L277)
+源码：[src/mpsalgorithms/algorithms/arithmetics/hadamard.jl:277](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/hadamard.jl#L277)
 
 
 
@@ -1544,7 +1544,7 @@ with single-site sweeps over the two (A†A and A†) environment stacks. `ynorm
 raw-data ‖y‖², the constant of the global objective.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:81](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L81)
+源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:81](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L81)
 
 
 	LinsolveCache(x, A, y)
@@ -1553,7 +1553,7 @@ Build the `LinsolveCache` of the iterative `linsolve`: allocate the h/b environm
 stacks and initialize them by a data-level right-orthogonalization of `x`.
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:198](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L198)
+源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:198](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L198)
 
 
 
@@ -1567,7 +1567,7 @@ Seq2SeqCache: ALS problem carrier for `seq2seq` — fit W minimizing
 sweeps over the three (quadratic / linear / ridge) environment stacks.
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:78](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L78)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:78](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L78)
 
 
 	Seq2SeqCache(H, kets, bras)
@@ -1577,7 +1577,7 @@ stacks, the ridge stack and the target norm, and initialize everything. The ridg
 strength α enters at solve time from the `Seq2Seq` algorithm.
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:339](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L339)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:339](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L339)
 
 
 
@@ -1635,7 +1635,7 @@ real time by `τ` (`exp(-i·τ·H)`).
   ```
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:137](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L137)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:137](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L137)
 
 
 	TDVPCache(state, h::AbstractMPO) -> TDVPCache
@@ -1648,7 +1648,7 @@ a vectorized density-operator flow, the superoperator of `superoperator`); for a
 `CanonicalMPO` state it is the operator multiplying the density operator from the left.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:226](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L226)
+源码：[src/mpsalgorithms/algorithms/timeevo/tdvp.jl:226](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tdvp.jl#L226)
 
 
 
@@ -1678,7 +1678,7 @@ turned into the equivalent factor `scaling(H)^L` on the local generators (what
 state's `scaling` is bookkeeping only and flows through untouched.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:110](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L110)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:110](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L110)
 
 
 	HadamardTDVPCache(ψ::CanonicalMPS, H::CanonicalMPS) -> HadamardTDVPCache
@@ -1687,7 +1687,7 @@ Build the three-chain environment stack of the guess `ψ` for the Hadamard flow 
 by `H` (see `HadamardTDVPCache`); the Schmidt values of the guess are reset.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:137](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L137)
+源码：[src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl:137](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/hadamardtdvp.jl#L137)
 
 
 
@@ -1702,7 +1702,7 @@ First-order W-type (WI) time evolution: the evolved MPO tensor is
 `W = [[I + dt·D, δ₂·C], [δ₁·B, A]]` with `δ₁δ₂ = dt`.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:9](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L9)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:9](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L9)
 
 
 
@@ -1717,7 +1717,7 @@ First-order W-type (WII) time evolution: each site tensor contains block submatr
 of the block-matrix exponential, giving higher accuracy per step than `WI`.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:20](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L20)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:20](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L20)
 
 
 
@@ -1732,7 +1732,7 @@ Combine a first-order stepper into a second-order stepper: two steps with
 `dt₁ = (1-im)·dt/2` and `dt₂ = (1+im)·dt/2` (real time) compose to second order.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:31](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L31)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:31](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L31)
 
 
 
@@ -1747,7 +1747,7 @@ The two half steps of `ComplexStepper`: `U₁ = exp(H·dt₁)`, `U₂ = exp(H·d
 `U₁U₂` is a second-order stepper.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:41](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L41)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:41](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L41)
 
 
 
@@ -1777,7 +1777,7 @@ Schur form by the cluster loop-back.
 - Van Damme et al., SciPost Phys. 17, 135 (2024).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl:5](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl#L5)
+源码：[src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl:5](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl#L5)
 
 
 
@@ -1797,7 +1797,7 @@ method assembles the dense finite-chain `MPO` (vacuum row of the first site,
 closing column of the last).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl:262](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl#L262)
+源码：[src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl:262](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl#L262)
 
 
 	timeevompo(m::SchurMPOTensor, dt, alg)
@@ -1811,7 +1811,7 @@ closing column of the last site; the channel-1 diagonal carries the on-site evol
 `ComplexStepper` returns the pair of half-step results.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:71](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L71)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:71](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L71)
 
 
 
@@ -1828,7 +1828,7 @@ evolved MPO is applied with `mult` under the truncation `trunc`, exactly like th
 first-order steppers; `timeevo!` handles it through its `MPSAlgorithm` fallback.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl:332](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl#L332)
+源码：[src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl:332](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/taylorcluster.jl#L332)
 
 
 	timeevo(ψ::CanonicalMPS, h::MPOHamiltonian, dt, alg::FirstOrderStepper;
@@ -1841,7 +1841,7 @@ MPO with `timeevompo` and apply it to `ψ` with the truncation `trunc` (via
 `ComplexStepper` composes the two half steps for second-order accuracy.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:171](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L171)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:171](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L171)
 
 
 
@@ -1858,7 +1858,7 @@ into `ψ` (see there for the algorithm; `ComplexStepper` composes the two half s
 second-order accuracy).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:192](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L192)
+源码：[src/mpsalgorithms/algorithms/timeevo/w1w2.jl:192](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/w1w2.jl#L192)
 
 
 
@@ -1876,7 +1876,7 @@ are expanded to the dense MPO layer. Returns `(x, info)` with `info`, the
 `ALSConvergenceInfo` of the sweeps (`info.residual` = final loss = ‖A·x − y‖²).
 
 
-源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:247](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L247)
+源码：[src/mpsalgorithms/algorithms/arithmetics/linsolve.jl:247](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/arithmetics/linsolve.jl#L247)
 
 
 
@@ -1903,7 +1903,7 @@ loss of two successive sweeps below `alg.tol`). Since the loss *is* the (squared
 data residual here, `info.residual` holds the final loss.
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:360](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L360)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:360](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L360)
 
 
 	seq2seq(pairfun::Function, dxs, dys, alg::Seq2Seq = Seq2Seq())
@@ -1921,7 +1921,7 @@ final training loss, the maximal pool error, the number of training pairs and th
 number of enrichment rounds.
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:419](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L419)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:419](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L419)
 
 
 
@@ -1939,7 +1939,7 @@ guess). The data scalings are folded into the site tensors at entry. Returns
 (`info.residual` = final loss = the global data objective `Σ_n ||W·x_n − y_n||²`).
 
 
-源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:385](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L385)
+源码：[src/mpsalgorithms/algorithms/ml/seq2seq.jl:385](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/ml/seq2seq.jl#L385)
 
 
 
@@ -1959,7 +1959,7 @@ values, expand the state, or silently accept an all-zero conditional distributio
 The legacy overload uses `Random.default_rng()`.
 
 
-源码：[src/mpsalgorithms/algorithms/sampling.jl:3](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/sampling.jl#L3)
+源码：[src/mpsalgorithms/algorithms/sampling.jl:3](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/sampling.jl#L3)
 
 
 
@@ -1978,7 +1978,7 @@ materialized, so the amplitude stays finite even for scalings whose `scaling(ψ)
 would overflow. The rows of the site tensors are contracted left to right.
 
 
-源码：[src/mpsalgorithms/algorithms/sampling.jl:96](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/sampling.jl#L96)
+源码：[src/mpsalgorithms/algorithms/sampling.jl:96](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/sampling.jl#L96)
 
 
 
@@ -1994,7 +1994,7 @@ by a positive scalar to avoid long-chain underflow. Their scalar normalizations
 cancel in conditional probabilities. Does not modify `ψ`.
 
 
-源码：[src/mpsalgorithms/algorithms/sampling.jl:72](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/sampling.jl#L72)
+源码：[src/mpsalgorithms/algorithms/sampling.jl:72](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/sampling.jl#L72)
 
 
 
@@ -2023,7 +2023,7 @@ it does not certify the global variational minimum. Diagnostics report whether
 a variance was computed (currently false), plus budget and initialization.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl:260](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl#L260)
+源码：[src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl:260](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl#L260)
 
 
 
@@ -2039,7 +2039,7 @@ Together with the boundary charges `(0,0)` and `target`, zero leakage proves
 that every represented configuration has the requested two-component charge.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl:242](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl#L242)
+源码：[src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl:242](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/sector_dmrg.jl#L242)
 
 
 
@@ -2054,7 +2054,7 @@ Conservative bytes for the sequential two-site action, including dense site
 copies for Schur tensors. This estimate has no `W_L*W_R*d1^2*d2^2` object.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:23](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L23)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg2.jl:23](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg2.jl#L23)
 
 
 
@@ -2072,7 +2072,7 @@ full sweep is `leftsweep!` (sites `1:L`, QR moves the orthogonality center right
 followed by `rightsweep!` (sites `L:1`) — this order must not be exchanged.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:12](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L12)
+源码：[src/mpsalgorithms/algorithms/groundstates/dmrg.jl:12](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/dmrg.jl#L12)
 
 
 
@@ -2086,7 +2086,7 @@ followed by `rightsweep!` (sites `L:1`) — this order must not be exchanged.
 Environment cache for the excited-state search of `ψ`: one overlap cache per projector.
 
 
-源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:14](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L14)
+源码：[src/mpsalgorithms/algorithms/groundstates/excited.jl:14](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/groundstates/excited.jl#L14)
 
 
 
@@ -2131,7 +2131,7 @@ interface uniformity; the center-movement re-splits are truncating SVDs under
 `alg.trunc` and carry the gauge themselves.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:26](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L26)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:26](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L26)
 
 
 
@@ -2151,7 +2151,7 @@ the bond dimension). `alg_eigsolve` (a `KrylovKit` algorithm object, see
 re-splits are truncating SVDs under `alg.trunc` and carry the gauge themselves.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:15](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L15)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:15](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L15)
 
 
 
@@ -2171,7 +2171,7 @@ The mutable state (the center position and its tensor) lives in `Ref` fields, so
 ansatz itself is immutable: sweeps update `rho.center[]` / `rho.mcenter[]` in place.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:52](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L52)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:52](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L52)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -2193,7 +2193,7 @@ Environment stack for p-DMRG: `H` the MPO, `rho` the PMPA, `hstorage` the
 `⟨A/B | H | A/B⟩` environments built from the isometric part of the PMPA.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:107](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L107)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:107](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L107)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -2216,7 +2216,7 @@ Random PMPA of physical dimensions `ds`, bond cap `D` and purification rank `R`,
 right-canonical form with center at site 1.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:79](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L79)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:79](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L79)
 
 
 
@@ -2232,7 +2232,7 @@ Free energy `F = -log(Z)/β` and the PMPA equilibrium state of `h` at inverse te
 `alg.R`; `info` is the `ALSConvergenceInfo` of the sweeps.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:534](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L534)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:534](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L534)
 
 
 
@@ -2251,7 +2251,7 @@ The iteration loop is the generic `iterative_compute!` with `β` forwarded to th
 `info` is the returned `ALSConvergenceInfo`.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:518](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L518)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:518](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L518)
 
 
 
@@ -2267,7 +2267,7 @@ temperature `β` (`T = 1/β`), with the entropy from the center's local spectrum
 spectrum of `ρ` equals that of its center block).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:548](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L548)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:548](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L548)
 
 
 
@@ -2281,7 +2281,7 @@ spectrum of `ρ` equals that of its center block).
 Trace of the represented density operator (1 for a properly normalized state).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:93](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L93)
+源码：[src/mpsalgorithms/algorithms/experimental/pdmrg.jl:93](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/pdmrg.jl#L93)
 
 
 	tr(h::AbstractMPO)
@@ -2290,7 +2290,7 @@ The trace of the operator chain, including `scaling` of `CanonicalMPO` inputs
 (applied per site during the contraction — no `scaling^L` power is materialized).
 
 
-源码：[src/mpscore/operators/linalg.jl:71](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/linalg.jl#L71)
+源码：[src/mpscore/operators/linalg.jl:71](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/linalg.jl#L71)
 
 
 
@@ -2309,7 +2309,7 @@ recorded gates in application order, so observables must be evaluated with
 circuits instead of using `ket` directly.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:147](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L147)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:147](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L147)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -2349,7 +2349,7 @@ oracle queries, then `nadd` Born samples of the current fit (re-evaluated by the
 oracle) per round, for at most `nrounds` rounds.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:19](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L19)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:19](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L19)
 
 
 
@@ -2372,7 +2372,7 @@ re-split further relieves local minima of the single-site problem. Shares the
 adaptive sample-enrichment loop of `reconstruct`.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:55](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L55)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:55](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L55)
 
 
 
@@ -2388,7 +2388,7 @@ adaptive sample-enrichment loop of `reconstruct`.
 	rank-3 version).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:140](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L140)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:140](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L140)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -2416,7 +2416,7 @@ initial guess is a random chain of the bond profile demanded by `alg`. Returns `
 here, so `info.residual` holds the final loss).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:473](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L473)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:473](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L473)
 
 
 	reconstruct(Afun, ds, alg = ALSRecon())
@@ -2439,7 +2439,7 @@ information. Each round runs the inner sweeps of `iterative_compute!` up to
 `alg.maxiter`.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:510](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L510)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:510](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L510)
 
 
 
@@ -2456,7 +2456,7 @@ re-fitted to `alg`'s demand with `changebond!`). Returns `(ψ, info)` with `info
 `ALSConvergenceInfo` of the sweeps (`info.residual` = final loss).
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:492](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L492)
+源码：[src/mpsalgorithms/algorithms/experimental/reconstruct.jl:492](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/reconstruct.jl#L492)
 
 
 
@@ -2477,7 +2477,7 @@ gate is left out: every intersecting pair is mergeable, and the fused circuit ap
 the same product of operators as the input.
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tebd.jl:74](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tebd.jl#L74)
+源码：[src/mpsalgorithms/algorithms/timeevo/tebd.jl:74](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tebd.jl#L74)
 
 
 
@@ -2515,4 +2515,4 @@ The circuit can be compressed with `fuse_gates` and applied with
 `apply!`).
 
 
-源码：[src/mpsalgorithms/algorithms/timeevo/tebd.jl:191](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tebd.jl#L191)
+源码：[src/mpsalgorithms/algorithms/timeevo/tebd.jl:191](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/timeevo/tebd.jl#L191)

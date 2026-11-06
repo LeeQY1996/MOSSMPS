@@ -82,7 +82,7 @@ end
 	y_ac = ac_prime(x, W, hl, hr)
 	@test size(y_ac) == (size(hl, 1), phydim(W), size(hr, 1))
 	heff = Heff(W, hl, hr)
-	@test heff isa MOSSQuantumMPS.MPSAlgorithms.CentralHeff
+	@test heff isa MOSSMPS.MPSAlgorithms.CentralHeff
 	y_heff = ac_prime(x, heff)
 	@test y_heff ≈ y_ac atol = 1e-12
 	hleft_c = randn(ComplexF64, 3, 2, 4)   # (a, w, b)

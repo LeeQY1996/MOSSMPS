@@ -1,6 +1,6 @@
-import MOSSQuantumMPS
-const SharedMPSCore = MOSSQuantumMPS.MPSCore
-const FMA = MOSSQuantumMPS.MPSAlgorithms
+import MOSSMPS
+const SharedMPSCore = MOSSMPS.MPSCore
+const FMA = MOSSMPS.MPSAlgorithms
 
 @testset "shared MPSCore contract" begin
     @test FMA.CanonicalMPS === SharedMPSCore.CanonicalMPS
@@ -13,7 +13,7 @@ const FMA = MOSSQuantumMPS.MPSAlgorithms
     @test FMA.space_l === SharedMPSCore.space_l
     @test FMA.space_r === SharedMPSCore.space_r
     @test FMA.phydim === SharedMPSCore.phydim
-    state = MOSSQuantumMPS.zero_state_mps(3)
+    state = MOSSMPS.zero_state_mps(3)
     @test state.core isa FMA.CanonicalMPS
-    @test FMA.bonddims(state.core) == MOSSQuantumMPS.bonddims(state)
+    @test FMA.bonddims(state.core) == MOSSMPS.bonddims(state)
 end

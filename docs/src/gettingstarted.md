@@ -1,9 +1,9 @@
 # 快速开始
 
-将 MOSSQuantum 和 MOSSQuantumMPS 两个源码目录开发挂接到同一个 Julia 环境；具体安装命令和依赖授权说明见仓库 README。
+将 MOSSQuantum 和 MOSSMPS 两个源码目录开发挂接到同一个 Julia 环境；具体安装命令和依赖授权说明见仓库 README。
 
 ```julia
-using MOSSQuantum, MOSSQuantumMPS, Random
+using MOSSQuantum, MOSSMPS, Random
 
 backend = MatrixProductBackend(trunc=NoTruncation())
 state = zero_state_mps(2)

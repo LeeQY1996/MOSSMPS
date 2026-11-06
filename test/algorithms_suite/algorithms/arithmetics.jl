@@ -339,8 +339,8 @@ end
 	@test Defaults.maxiter == 100
 
 	# DefaultMultAlg (not exported, access via module)
-	@test MOSSQuantumMPS.MPSAlgorithms.DefaultMultAlg isa SVDCompression
-	@test MOSSQuantumMPS.MPSAlgorithms.DefaultMultAlg.trunc == Defaults.alg_trunc()
+	@test MOSSMPS.MPSAlgorithms.DefaultMultAlg isa SVDCompression
+	@test MOSSMPS.MPSAlgorithms.DefaultMultAlg.trunc == Defaults.alg_trunc()
 
 	# truncation scheme types
 	tr = truncdimcutoff(8, 1e-10)
@@ -356,7 +356,7 @@ end
 	# svd_add (internal, no longer exported)
 	ψ1 = randommps(ComplexF64, ds; D=4)
 	ψ2 = randommps(ComplexF64, ds; D=4)
-	ψsum, errsum = MOSSQuantumMPS.MPSAlgorithms.svd_add([ψ1, ψ2], truncdim(8))
+	ψsum, errsum = MOSSMPS.MPSAlgorithms.svd_add([ψ1, ψ2], truncdim(8))
 	@test todense(ψsum) ≈ todense(ψ1) + todense(ψ2) atol = 1e-8
 end
 

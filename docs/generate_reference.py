@@ -100,7 +100,7 @@ def write(path,title,names,scope,common):
         for p,line,body in blocks[k]:
             if body in seen:continue
             seen.add(body)
-            out += ['\n'+clean(body)+'\n',f'\n源码：[{p.relative_to(root)}:{line}](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/{p.relative_to(root)}#L{line})\n']
+            out += ['\n'+clean(body)+'\n',f'\n源码：[{p.relative_to(root)}:{line}](https://github.com/LeeQY1996/MOSSMPS/blob/master/{p.relative_to(root)}#L{line})\n']
         if not blocks[k] and k not in manual:raise RuntimeError('Missing documentation: '+k)
         if defs[k]:
             # Include source declarations when docstrings only describe the type or do not list a callable signature.
@@ -109,9 +109,9 @@ def write(path,title,names,scope,common):
                 out += ['\n实际声明（类型参数与关键字默认值以源码为准）：\n','```julia\n'+'\n'.join(lines[:8])+'\n```\n']
     path.write_text('\n'.join(out))
 write(root/'docs/api/core-reference.md','MPSCore 逐项 API 参考',core,'core',
-'''\n导入方式：`import MOSSQuantumMPS.MPSCore as C`。这是数值张量网络基础层，`CanonicalMPS` 不是模拟器外层的 `MOSSQuantumMPS.MPS`。MPS 张量轴序 `(左键,物理,右键)`，MPO 轴序 `(左键,输出物理,右键,输入物理)`。正则链的 `scaling` 是每站点尺度，网络整体带 `scaling^L`。\n
+'''\n导入方式：`import MOSSMPS.MPSCore as C`。这是数值张量网络基础层，`CanonicalMPS` 不是模拟器外层的 `MOSSMPS.MPS`。MPS 张量轴序 `(左键,物理,右键)`，MPO 轴序 `(左键,输出物理,右键,输入物理)`。正则链的 `scaling` 是每站点尺度，网络整体带 `scaling^L`。\n
 ```julia
-import MOSSQuantumMPS.MPSCore as C
+import MOSSMPS.MPSCore as C
 using LinearAlgebra
 psi = C.prodmps(ComplexF64, [2, 2], [1, 1]) # 局域状态索引从 1 开始
 @assert norm(psi) ≈ 1
@@ -120,10 +120,10 @@ u, s, vt, err = C.tsvd([1.0 0; 0 0.5]; trunc=C.NoTruncation())
 ```
 ''')
 write(root/'docs/api/algorithms-reference.md','MPSAlgorithms 逐项 API 参考',alg,'algorithms',
-'''\n导入方式：`import MOSSQuantumMPS.MPSAlgorithms as A`。公共基础类型与 `MPSCore` 的对象相同；索引表将再导出项链接到基础层参考。算法新增项在下方分别列出；`experimental/` 来源的条目属于实验接口。\n
+'''\n导入方式：`import MOSSMPS.MPSAlgorithms as A`。公共基础类型与 `MPSCore` 的对象相同；索引表将再导出项链接到基础层参考。算法新增项在下方分别列出；`experimental/` 来源的条目属于实验接口。\n
 `SVDCompression` 通常返回压缩后的对象；反复扫描的算术算法一般返回 `(对象, ALSConvergenceInfo)`，DMRG 返回值请查具体方法，不能以一种返回形状代替全部重载。收敛状态、残差、截断与内存限制均应随结果核查。\n
 ```julia
-import MOSSQuantumMPS.MPSAlgorithms as A
+import MOSSMPS.MPSAlgorithms as A
 psi = A.prodmps(ComplexF64, [2, 2], [1, 1])
 compressed = A.compress(psi, A.SVDCompression(trunc=A.NoTruncation()))
 ```
@@ -133,4 +133,4 @@ print('MPSCore exports:',len(core),'MPSAlgorithms exports:',len(alg),'unique sub
 for p in (root/'docs/api').glob('*reference.md'):print(p,len(p.read_text().splitlines()),p.stat().st_size)
 
 write(root/'docs/api/models-reference.md','Models 逐项 API 参考',models,'models',
-    '导入 `import MOSSQuantumMPS.MPSAlgorithms.Models as Models`。以下模型均为有限开放链，构造函数要求 `L ≥ 2`，不提供周期边界。')
+    '导入 `import MOSSMPS.MPSAlgorithms.Models as Models`。以下模型均为有限开放链，构造函数要求 `L ≥ 2`，不提供周期边界。')

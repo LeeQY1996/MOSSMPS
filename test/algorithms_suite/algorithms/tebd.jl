@@ -160,12 +160,12 @@ end
 	ψb0 = copy(ψb)
 	vb0 = todense(ψb)
 	perm = randperm(L)
-	for b in MOSSQuantumMPS.MPSAlgorithms.permutation2swaps(perm)
+	for b in MOSSMPS.MPSAlgorithms.permutation2swaps(perm)
 		swap!(ψb, b; trunc=NoTruncation())
 	end
 	@test iscanonical(ψb; atol=1e-8)
 	@test todense(ψb) != vb0 || isperm(perm) && perm == collect(1:L)   # content moved
-	for b in MOSSQuantumMPS.MPSAlgorithms.permutation2swaps(invperm(perm))
+	for b in MOSSMPS.MPSAlgorithms.permutation2swaps(invperm(perm))
 		swap!(ψb, b; trunc=NoTruncation())
 	end
 	@test iscanonical(ψb; atol=1e-8)

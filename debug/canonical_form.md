@@ -1,7 +1,7 @@
 # 正则形式保持验证（canonical form check）
 
 > **历史资料**：对应脚本依赖旧的 MPSSimulator、QuantumCircuits、VQC 和
-> FiniteMPSAlgorithms，尚未适配当前 MOSSQuantumMPS，不能在当前项目环境直接运行。
+> FiniteMPSAlgorithms，尚未适配当前 MOSSMPS，不能在当前项目环境直接运行。
 > 下文保留的是旧项目的验证方法和历史结果，不代表当前版本已完成相同验证。
 > 当前项目的验证方法请参见 [项目说明](../README.md) 和 [测试说明](../test/README.md)。
 

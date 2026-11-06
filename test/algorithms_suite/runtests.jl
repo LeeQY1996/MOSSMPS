@@ -5,18 +5,18 @@ using LinearAlgebra
 using Logging
 using Random
 using TensorOperations
-using MOSSQuantumMPS.MPSAlgorithms
-# not exported: access the settings module via `using MOSSQuantumMPS.MPSAlgorithms.Defaults`
-using MOSSQuantumMPS.MPSAlgorithms.Defaults
+using MOSSMPS.MPSAlgorithms
+# not exported: access the settings module via `using MOSSMPS.MPSAlgorithms.Defaults`
+using MOSSMPS.MPSAlgorithms.Defaults
 # disambiguate from LinearAlgebra's SVD/QR/LQ factorization objects
-using MOSSQuantumMPS.MPSAlgorithms: SVD, QR, QRpos, LQ, LQpos, SDD, Polar, max_bonddims, l_LL, r_RR,
+using MOSSMPS.MPSAlgorithms: SVD, QR, QRpos, LQ, LQpos, SDD, Polar, max_bonddims, l_LL, r_RR,
                            PauliTerm
 
 include("helpers.jl")
 
-@testset verbose = true "MOSSQuantumMPS.MPSAlgorithms" begin
+@testset verbose = true "MOSSMPS.MPSAlgorithms" begin
 	include("shared_core.jl")
-	# The core tensor/state/MPO suites live with MOSSQuantumMPS. These
+	# The core tensor/state/MPO suites live with MOSSMPS. These
 	# cases exercise algorithms against MPOs and the model builders.
 	@testset "operator and model integration" begin
 		include("operators/longrangeop.jl")

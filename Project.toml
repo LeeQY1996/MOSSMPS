@@ -1,4 +1,4 @@
-name = "MOSSQuantumMPS"
+name = "MOSSMPS"
 uuid = "81a3ca4a-d8a6-413d-b6dc-9dafd4a3cd05"
 authors = ["Guo Chu <guochu604b@gmail.com>"]
 version = "0.1.0"

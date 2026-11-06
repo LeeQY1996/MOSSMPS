@@ -69,28 +69,28 @@
     W1=randn(rng,ComplexF64,2,2,3,2); W2=randn(rng,ComplexF64,3,3,2,3)
     hl=randn(rng,ComplexF64,2,2,2); hr=randn(rng,ComplexF64,2,2,2)
     x=randn(rng,ComplexF64,2,2,3,2)
-    heff=MOSSQuantumMPS.MPSAlgorithms.TwoSiteHeff(W1,W2,hl,hr)
+    heff=MOSSMPS.MPSAlgorithms.TwoSiteHeff(W1,W2,hl,hr)
     @tensor combined[wl,p,q,wr,i,j] := W1[wl,p,k,i]*W2[k,q,wr,j]
     @tensor expected[a,p,q,b] := hl[a,wl,c]*combined[wl,p,q,wr,i,j]*x[c,i,j,d]*hr[b,wr,d]
-    @test MOSSQuantumMPS.MPSAlgorithms.ac2_prime(x,heff) ≈ expected atol=1e-10
-    @test_throws ArgumentError MOSSQuantumMPS.MPSAlgorithms.ac2_prime(x,heff;memory_budget=1)
+    @test MOSSMPS.MPSAlgorithms.ac2_prime(x,heff) ≈ expected atol=1e-10
+    @test_throws ArgumentError MOSSMPS.MPSAlgorithms.ac2_prime(x,heff;memory_budget=1)
     # A budgeted cache contracts each MPO site with its environment once,
     # then applies two packed matrix multiplies per Krylov step. Compare
     # both adaptive branches with the independent nonuniform Wcomb oracle.
-    action,plan=MOSSQuantumMPS.MPSAlgorithms._sector_two_site_action(x,heff;memory_budget=2^20)
+    action,plan=MOSSMPS.MPSAlgorithms._sector_two_site_action(x,heff;memory_budget=2^20)
     @test plan.mode==:cached_halves
     @test action(x) ≈ expected atol=1e-10
-    @test action(x) ≈ MOSSQuantumMPS.MPSAlgorithms.ac2_prime(x,heff) atol=1e-10
+    @test action(x) ≈ MOSSMPS.MPSAlgorithms.ac2_prime(x,heff) atol=1e-10
     @test plan.cache_bytes > 0
     @test plan.cached_flops_per_action < plan.sequential_flops_per_action
     @test plan.cached_workspace_bytes > plan.sequential_workspace_bytes
     fallback_budget=Int(plan.sequential_workspace_bytes)
-    fallback,fallback_plan=MOSSQuantumMPS.MPSAlgorithms._sector_two_site_action(
+    fallback,fallback_plan=MOSSMPS.MPSAlgorithms._sector_two_site_action(
         x,heff;memory_budget=fallback_budget)
     @test fallback_plan.mode==:sequential
     @test fallback_plan.cache_bytes==0
     @test fallback(x) ≈ expected atol=1e-10
-    @test_throws ArgumentError MOSSQuantumMPS.MPSAlgorithms._sector_two_site_action(
+    @test_throws ArgumentError MOSSMPS.MPSAlgorithms._sector_two_site_action(
         x,heff;memory_budget=1)
     @test sum(values(result.diagnostics.contraction_modes))==length(result.local_iterations)
     @test result.diagnostics.action_invocations==sum(z.action_invocations for z in result.local_iterations)
@@ -100,10 +100,10 @@
     diagonal=Diagonal(diag)
     warm=ComplexF64.(vcat(1.0,1e-5*randn(MersenneTwister(3),127)))
     warm/=norm(warm)
-    K=MOSSQuantumMPS.MPSAlgorithms.KrylovKit
+    K=MOSSMPS.MPSAlgorithms.KrylovKit
     _,_,lazy=K.eigsolve(v->diagonal*v,warm,1,:SR;
         ishermitian=true,tol=1e-10,maxiter=200,krylovdim=32,eager=false)
-    value,_,eager=MOSSQuantumMPS.MPSAlgorithms._sector_eigensolve(
+    value,_,eager=MOSSMPS.MPSAlgorithms._sector_eigensolve(
         x->reshape(diagonal*vec(x),size(x)),reshape(warm,1,128,1),collect(1:128);
         tolerance=1e-10,local_maxiter=200,memory_budget=2^20)
     @test abs(value) < 1e-10

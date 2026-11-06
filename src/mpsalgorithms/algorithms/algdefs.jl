@@ -178,7 +178,7 @@ values; the cache constructors therefore reset them (`unset_svectors!`) on the w
 guess, so no stale spectrum can masquerade as a canonical gauge.
 
 Logging follows the package-wide `verbosity` convention (header of
-`MOSSQuantumMPS.MPSAlgorithms`): level ≥ 2 summarizes the final (best) loss of every sweep
+`MOSSMPS.MPSAlgorithms`): level ≥ 2 summarizes the final (best) loss of every sweep
 (`_logiter`); level ≥ 3 additionally prints the loss of every local update from within
 the sweeps, tagged with the half-sweep direction (`_logupdate`).
 """

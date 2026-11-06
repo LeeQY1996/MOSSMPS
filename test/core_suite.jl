@@ -3,8 +3,8 @@ using Test
 using LinearAlgebra
 using Random
 using TensorOperations
-using MOSSQuantumMPS.MPSCore
-using MOSSQuantumMPS.MPSCore: MPSCore, SVD, QR, QRpos, LQ, LQpos, SDD, Polar,
+using MOSSMPS.MPSCore
+using MOSSMPS.MPSCore: MPSCore, SVD, QR, QRpos, LQ, LQpos, SDD, Polar,
     max_bonddims, l_LL, r_RR
 const Defaults = MPSCore.Defaults
 include("core/helpers.jl")

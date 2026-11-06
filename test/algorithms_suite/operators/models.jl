@@ -1,4 +1,4 @@
-using MOSSQuantumMPS.MPSAlgorithms.Models
+using MOSSMPS.MPSAlgorithms.Models
 
 @testset "models (finite 1d Hamiltonians)" begin
 	# ---- spin-1/2 operators ----

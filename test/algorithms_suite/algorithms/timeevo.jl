@@ -63,7 +63,7 @@ end
 	# stepper type hierarchy
 	@test WI() isa FirstOrderStepper && WII() isa FirstOrderStepper
 	@test ComplexStepper() isa SecondOrderStepper
-	@test WI() isa MOSSQuantumMPS.MPSAlgorithms.MPSAlgorithm && ComplexStepper(stepper=WII()) isa MOSSQuantumMPS.MPSAlgorithms.MPSAlgorithm
+	@test WI() isa MOSSMPS.MPSAlgorithms.MPSAlgorithm && ComplexStepper(stepper=WII()) isa MOSSMPS.MPSAlgorithms.MPSAlgorithm
 	@test ComplexStepper().stepper isa WII   # default stepper
 end
 
@@ -647,7 +647,7 @@ end
 	# --- interface: the cache rejects mismatched chains ---
 	@test_throws DimensionMismatch HadamardTDVPCache(prodmps(ComplexF64, fill(2, L - 1), fill(1, L - 1)), H)
 	@test_throws DimensionMismatch HadamardTDVPCache(tomps(randn(ComplexF64, 3^L), fill(3, L)), H)
-	@test HadamardTDVP(stepsize=-0.1) isa MOSSQuantumMPS.MPSAlgorithms.MPSAlgorithm
+	@test HadamardTDVP(stepsize=-0.1) isa MOSSMPS.MPSAlgorithms.MPSAlgorithm
 end
 
 @testset "timeevo (HadamardTDVP, two-site)" begin
@@ -710,7 +710,7 @@ end
 	end
 	@test errs[2] < errs[1]
 
-	@test HadamardTDVP2(stepsize=-0.1) isa MOSSQuantumMPS.MPSAlgorithms.MPSAlgorithm
+	@test HadamardTDVP2(stepsize=-0.1) isa MOSSMPS.MPSAlgorithms.MPSAlgorithm
 	@test HadamardTDVP2(stepsize=-0.1).trunc === Defaults.alg_trunc()
 	@test HadamardTDVP2(stepsize=-0.1, trunc=truncdim(3)).trunc == truncdim(3)
 	@test HadamardTDVP2(stepsize=-0.1).ishermitian == false

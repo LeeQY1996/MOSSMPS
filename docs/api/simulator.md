@@ -1,6 +1,6 @@
 # 模拟器 API：态、门、观测量与读出
 
-[返回 API 目录](../api.md)。本页覆盖 `MOSSQuantumMPS` 顶层导出的全部符号。算法模块另见 [MPSAlgorithms](algorithms-reference.md)。下文用 `MP = MOSSQuantumMPS`、`MQ = MOSSQuantum` 区分同名接口。
+[返回 API 目录](../api.md)。本页覆盖 `MOSSMPS` 顶层导出的全部符号。算法模块另见 [MPSAlgorithms](algorithms-reference.md)。下文用 `MP = MOSSMPS`、`MQ = MOSSQuantum` 区分同名接口。
 
 ## 数据约定
 
@@ -13,9 +13,9 @@
 ### `AbstractMPS`、`MPS`、`DensityOperatorMPS`
 
 ```julia
-MPS(core::MOSSQuantumMPS.MPSCore.CanonicalMPS)
+MPS(core::MOSSMPS.MPSCore.CanonicalMPS)
 MPS(data::AbstractVector{<:AbstractArray{T,3}}, svectors=nothing)
-DensityOperatorMPS(core::MOSSQuantumMPS.MPSCore.CanonicalMPS)
+DensityOperatorMPS(core::MOSSMPS.MPSCore.CanonicalMPS)
 DensityOperatorMPS(data::AbstractVector{<:AbstractArray{T,3}}, svectors=nothing)
 ```
 
@@ -237,7 +237,7 @@ MQ.measure!(backend, state, q::Int; auto_reset=true, rng=...) -> (Int, probabili
 ## 直接矩阵调用示例
 
 ```julia
-import MOSSQuantumMPS as MP
+import MOSSMPS as MP
 using LinearAlgebra, Random
 
 psi = MP.zero_state_mps(2)

@@ -1,6 +1,6 @@
-# MOSSQuantumMPS API 与函数参考
+# MOSSMPS API 与函数参考
 
-Julia 包名是 `MOSSQuantumMPS`。本文按公开导出与源码实现整理；模拟器接口和数值算法子模块使用不同的类型与局域矩阵约定，调用时建议保留模块前缀。
+Julia 包名是 `MOSSMPS`。本文按公开导出与源码实现整理；模拟器接口和数值算法子模块使用不同的类型与局域矩阵约定，调用时建议保留模块前缀。
 
 | 文档 | 内容 |
 |---|---|
@@ -15,7 +15,7 @@ Julia 包名是 `MOSSQuantumMPS`。本文按公开导出与源码实现整理；
 ## 最小示例
 
 ```julia
-using MOSSQuantum, MOSSQuantumMPS, Random
+using MOSSQuantum, MOSSMPS, Random
 
 initial = zero_state_mps(2)
 circuit = QCircuit([HGate(1), CNOTGate(1, 2)])
@@ -25,6 +25,6 @@ MOSSQuantum.probabilities(result.state) # [0.5, 0, 0, 0.5]
 MOSSQuantum.sample(MersenneTwister(42), result.state, 8; backend=b) # 8 × 2
 ```
 
-`MOSSQuantumMPS.sample` 返回整数计数字典；`MOSSQuantum.sample` 返回逐次读出的矩阵。两个包都导出同名接口时，用限定名称明确选择。默认门截断是 `truncdimcutoff(50, 1e-8)`，可能产生近似；需要无截断计算时显式传入 `NoTruncation()`。
+`MOSSMPS.sample` 返回整数计数字典；`MOSSQuantum.sample` 返回逐次读出的矩阵。两个包都导出同名接口时，用限定名称明确选择。默认门截断是 `truncdimcutoff(50, 1e-8)`，可能产生近似；需要无截断计算时显式传入 `NoTruncation()`。
 
-源码：[MOSSQuantumMPS](https://github.com/LeeQY1996/MOSSQuantumMPS)。家族核心文档：[MOSSQuantum](https://leeqy1996.github.io/MOSSQuantum/)。
+源码：[MOSSMPS](https://github.com/LeeQY1996/MOSSMPS)。家族核心文档：[MOSSQuantum](https://leeqy1996.github.io/MOSSQuantum/)。

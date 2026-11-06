@@ -1,8 +1,8 @@
-# MOSSQuantumMPS 文档
+# MOSSMPS 文档
 
 MPS 模拟后端、张量链、DMRG、TDVP、压缩与严格电荷扇区。
 
-[API 与函数索引](api.md) · [安装与快速开始](../README.md) · [GitHub 仓库](https://github.com/LeeQY1996/MOSSQuantumMPS)
+[API 与函数索引](api.md) · [安装与快速开始](../README.md) · [GitHub 仓库](https://github.com/LeeQY1996/MOSSMPS)
 
 ## 使用这份参考
 
@@ -15,14 +15,14 @@ MPS 模拟后端、张量链、DMRG、TDVP、压缩与严格电荷扇区。
 | 文档站点 | 仓库 |
 | --- | --- |
 | [MOSSQuantum](https://leeqy1996.github.io/MOSSQuantum/) | [GitHub](https://github.com/LeeQY1996/MOSSQuantum) |
-| [MOSSQuantumMPS](https://leeqy1996.github.io/MOSSQuantumMPS/) | [GitHub](https://github.com/LeeQY1996/MOSSQuantumMPS) |
-| [MOSSQuantumStabilizer](https://leeqy1996.github.io/MOSSQuantumStabilizer/) | [GitHub](https://github.com/LeeQY1996/MOSSQuantumStabilizer) |
-| [MOSSQuantumChemistry](https://leeqy1996.github.io/MOSSQuantumChemistry/) | [GitHub](https://github.com/LeeQY1996/MOSSQuantumChemistry) |
+| [MOSSMPS](https://leeqy1996.github.io/MOSSMPS/) | [GitHub](https://github.com/LeeQY1996/MOSSMPS) |
+| [MOSSStabilizer](https://leeqy1996.github.io/MOSSStabilizer/) | [GitHub](https://github.com/LeeQY1996/MOSSStabilizer) |
+| [MOSSChemistry](https://leeqy1996.github.io/MOSSChemistry/) | [GitHub](https://github.com/LeeQY1996/MOSSChemistry) |
 | [MOSSFragmentTN](https://leeqy1996.github.io/MOSSFragmentTN/) | [GitHub](https://github.com/LeeQY1996/MOSSFragmentTN) |
 | [MOSSGPU](https://leeqy1996.github.io/MOSSGPU/) | [GitHub](https://github.com/LeeQY1996/MOSSGPU) |
 | [MOSSAlgorithmZoo](https://leeqy1996.github.io/MOSSAlgorithmZoo/) | [GitHub](https://github.com/LeeQY1996/MOSSAlgorithmZoo) |
 
-`MOSSQuantumMPS`、`MOSSQuantumChemistry`、`MOSSQuantumStabilizer` 分别由历史仓库 `MOSSMPS`、`MOSSChemistry`、`MOSSStabilizer` 更名而来。克隆和设置远程时使用新名称。`MOSSAlgorithmZoo` 是案例集合，按脚本加载，不是独立 Julia 库。
+家族包名与仓库名统一为 `MOSSMPS`、`MOSSChemistry`、`MOSSStabilizer`；只有核心包 `MOSSQuantum` 保留 `Quantum`。克隆、导入和设置远程时使用对应名称。`MOSSAlgorithmZoo` 是案例集合，按脚本加载，不是独立 Julia 库。
 
 ## 文档范围
 

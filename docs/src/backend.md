@@ -5,7 +5,7 @@
 `MatrixProductBackend(; trunc=...)` 实现 MOSSQuantum 的状态和后端接口。桥接层支持门、`QuantumMap`、保留比特的测量、后选择、Pauli 项与算符的期望，以及计算基读取。可通过 `MOSSQuantum.supports(backend, operation, state)` 查询支持情况；位置有效性仍需单独校验。
 
 ```julia
-using MOSSQuantum, MOSSQuantumMPS
+using MOSSQuantum, MOSSMPS
 backend = MatrixProductBackend(trunc=truncdim(32))
 state = zero_state_mps(3)
 gate = HGate(1)

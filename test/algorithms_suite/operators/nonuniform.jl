@@ -131,5 +131,5 @@
 	@test norm(todense(hacc) - 1.5 .* opa_at(X, 1)) / norm(1.5 .* opa_at(X, 1)) < 1e-12
 	# without a lattice dimension, direct construction from an all-scalar matrix still
 	# raises the explicit inference error
-	@test_throws ArgumentError MOSSQuantumMPS.MPSAlgorithms.SchurMPOTensor{ComplexF64}([1.0 2.0; 3.0 4.0])
+	@test_throws ArgumentError MOSSMPS.MPSAlgorithms.SchurMPOTensor{ComplexF64}([1.0 2.0; 3.0 4.0])
 end

@@ -1,13 +1,13 @@
 {
-  "title": "MOSSQuantumMPS",
-  "repository": "MOSSQuantumMPS",
+  "title": "MOSSMPS",
+  "repository": "MOSSMPS",
   "branch": "master",
   "description": "MPS 模拟后端、张量链、DMRG、TDVP、压缩与严格电荷扇区。",
   "family": [
     "MOSSQuantum",
-    "MOSSQuantumMPS",
-    "MOSSQuantumStabilizer",
-    "MOSSQuantumChemistry",
+    "MOSSMPS",
+    "MOSSStabilizer",
+    "MOSSChemistry",
     "MOSSFragmentTN",
     "MOSSGPU",
     "MOSSAlgorithmZoo"

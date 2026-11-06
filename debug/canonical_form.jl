@@ -1,6 +1,6 @@
-# 历史调试脚本：保留供参考，未适配当前 MOSSQuantumMPS，不能在当前项目环境直接运行。
+# 历史调试脚本：保留供参考，未适配当前 MOSSMPS，不能在当前项目环境直接运行。
 # 此脚本依赖旧的 MPSSimulator、QuantumCircuits、VQC 和 FiniteMPSAlgorithms。
-# 当前 MOSSQuantumMPS 验证方式请参考项目 README 和 test/README.md。
+# 当前 MOSSMPS 验证方式请参考项目 README 和 test/README.md。
 #
 # canonical_form.jl — 随机线路上验证门作用过程的正则形式保持
 #

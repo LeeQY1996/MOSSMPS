@@ -1,4 +1,4 @@
-module MOSSQuantumMPS
+module MOSSMPS
 
 using LinearAlgebra
 using Random

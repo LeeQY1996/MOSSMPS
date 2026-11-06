@@ -55,7 +55,7 @@
 		@test Wr[1, 1] == isometry(Float64, 2) && Wr[3, 4] == isometry(Float64, 2)
 		@test all(iszero, Wr[2, 3]) && all(iszero, Wr[3, 1])
 		# dense conversion keeps the rectangular logical shape
-		Wd3 = MOSSQuantumMPS.MPSAlgorithms.tompotensor(Wr)
+		Wd3 = MOSSMPS.MPSAlgorithms.tompotensor(Wr)
 		@test size(Wd3) == (3, 2, 4, 2)
 		@test Wd3[1, :, 1, :] == isometry(Float64, 2)
 		@test Wd3[3, :, 4, :] == isometry(Float64, 2)

@@ -1,9 +1,9 @@
 using Documenter
 using MOSSQuantum
-using MOSSQuantumMPS
+using MOSSMPS
 
 makedocs(
-    sitename = "MOSSQuantumMPS.jl",
+    sitename = "MOSSMPS.jl",
     authors = "Guo Chu",
     pages = ["Home" => "index.md",
              "Getting started" => "gettingstarted.md",

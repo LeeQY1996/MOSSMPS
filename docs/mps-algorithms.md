@@ -1,14 +1,14 @@
 # MPS and MPO algorithms
 
-The `MOSSQuantumMPS.MPSAlgorithms` module contains the algorithms formerly
+The `MOSSMPS.MPSAlgorithms` module contains the algorithms formerly
 provided by `FiniteMPSAlgorithms`. It uses the same MPS/MPO types as
-`MOSSQuantumMPS.MPSCore`; do not install the old package to use these APIs.
+`MOSSMPS.MPSCore`; do not install the old package to use these APIs.
 Import the module explicitly to avoid collisions with the simulator's `sample`,
 `amplitude` and other names:
 
 ```julia
-using MOSSQuantumMPS.MPSAlgorithms
-# or: import MOSSQuantumMPS.MPSAlgorithms as MPSAlg
+using MOSSMPS.MPSAlgorithms
+# or: import MOSSMPS.MPSAlgorithms as MPSAlg
 ```
 
 The module provides:
@@ -34,10 +34,9 @@ these methods use the same underlying tensor-network representation; consult
 the individual method docstrings for supported input types and truncation.
 
 To migrate existing code, replace `using FiniteMPSAlgorithms` with
-`using MOSSQuantumMPS.MPSAlgorithms`, and replace
+`using MOSSMPS.MPSAlgorithms`, and replace
 `using FiniteMPSAlgorithms.Models` with
-`using MOSSQuantumMPS.MPSAlgorithms.Models`. The source package name and UUID
-have not changed; `MOSSQuantumMPS` is the only MPS package required.
+`using MOSSMPS.MPSAlgorithms.Models`. The package UUID is unchanged; `MOSSMPS` is the only MPS package required.
 
 `sector_ground_state` adds exact two-component charge-sector DMRG to the same
 MPS/MPO types. See [charge-sector optimization and conditional sampling](sector-dmrg.md)

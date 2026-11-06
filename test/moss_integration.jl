@@ -2,7 +2,7 @@ using Test
 using Random
 using LinearAlgebra
 import MOSSQuantum as MQ
-import MOSSQuantumMPS as MPS
+import MOSSMPS as MPS
 
 # The backend instance owns the truncation policy; state copies are independent.
 const EXACT_BACKEND = MPS.MatrixProductBackend(; trunc=MPS.NoTruncation())

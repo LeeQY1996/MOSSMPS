@@ -1,11 +1,11 @@
 using Test
 using LinearAlgebra
 using Random
-using MOSSQuantumMPS
+using MOSSMPS
 
 Random.seed!(20260908)
 
-@testset "MOSSQuantumMPS" begin
+@testset "MOSSMPS" begin
     include("tensorops.jl")
     include("moss_integration.jl")
 end

@@ -11,7 +11,7 @@ using MatrixAlgebraKit: MatrixAlgebraKit, left_orth!, right_orth!, svd_compact!,
 	LeftOrthAlgorithm, RightOrthAlgorithm, diagview, isunitary
 using KrylovKit: KrylovKit, eigsolve, exponentiate
 
-# Foundational tensor-network types and operations live in MOSSQuantumMPS.
+# Foundational tensor-network types and operations live in MOSSMPS.
 # Algorithms extend these shared functions rather than defining duplicate types.
 using ..MPSCore
 import ..MPSCore: QR, LQ, SVD, expectation, expectationvalue, apply!,

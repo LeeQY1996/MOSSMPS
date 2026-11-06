@@ -2,7 +2,7 @@
 
 [返回 API 目录](../api.md)
 
-导入 `import MOSSQuantumMPS.MPSAlgorithms.Models as Models`。以下模型均为有限开放链，构造函数要求 `L ≥ 2`，不提供周期边界。
+导入 `import MOSSMPS.MPSAlgorithms.Models as Models`。以下模型均为有限开放链，构造函数要求 `L ≥ 2`，不提供周期边界。
 
 本页逐项列出公开符号。函数条目保留源码已有的完整签名与契约，补充未独立文档化的基础接口；签名中的类型均相对于当前子模块。源码链接可用于核对该方法的精确重载。
 
@@ -35,7 +35,7 @@ type `T` (default `ComplexF64`). `σx`/`σz`/`Sx`/`Sz` keep `T`; `σy`/`Sy` are 
 complex element type, since they are purely imaginary.
 
 
-源码：[src/mpsalgorithms/models.jl:29](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/models.jl#L29)
+源码：[src/mpsalgorithms/models.jl:29](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/models.jl#L29)
 
 
 
@@ -90,7 +90,7 @@ type `T` (default `ComplexF64`). `σx`/`σz`/`Sx`/`Sz` keep `T`; `σy`/`Sy` are 
 complex element type, since they are purely imaginary.
 
 
-源码：[src/mpsalgorithms/models.jl:29](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/models.jl#L29)
+源码：[src/mpsalgorithms/models.jl:29](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/models.jl#L29)
 
 
 
@@ -146,7 +146,7 @@ Spin-1/2 XXZ chain with a longitudinal field on `L` sites with open boundaries,
 so `Δ = 1` is the isotropic Heisenberg (XXX) chain and `Δ = 0` the XX chain.
 
 
-源码：[src/mpsalgorithms/models.jl:46](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/models.jl#L46)
+源码：[src/mpsalgorithms/models.jl:46](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/models.jl#L46)
 
 
 
@@ -165,7 +165,7 @@ Transverse-field Ising chain on `L` sites with open boundaries,
 `−4/π`); `h = 0` gives the classical Ising limit.
 
 
-源码：[src/mpsalgorithms/models.jl:73](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/models.jl#L73)
+源码：[src/mpsalgorithms/models.jl:73](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/models.jl#L73)
 
 
 
@@ -197,4 +197,4 @@ open chain no boundary string appears; a periodic Hubbard chain would need one (
 parity term), so it is not provided here.
 
 
-源码：[src/mpsalgorithms/models.jl:100](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/models.jl#L100)
+源码：[src/mpsalgorithms/models.jl:100](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/models.jl#L100)

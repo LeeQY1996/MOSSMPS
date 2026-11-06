@@ -3,10 +3,10 @@
 [返回 API 目录](../api.md)
 
 
-导入方式：`import MOSSQuantumMPS.MPSCore as C`。这是数值张量网络基础层，`CanonicalMPS` 不是模拟器外层的 `MOSSQuantumMPS.MPS`。MPS 张量轴序 `(左键,物理,右键)`，MPO 轴序 `(左键,输出物理,右键,输入物理)`。正则链的 `scaling` 是每站点尺度，网络整体带 `scaling^L`。
+导入方式：`import MOSSMPS.MPSCore as C`。这是数值张量网络基础层，`CanonicalMPS` 不是模拟器外层的 `MOSSMPS.MPS`。MPS 张量轴序 `(左键,物理,右键)`，MPO 轴序 `(左键,输出物理,右键,输入物理)`。正则链的 `scaling` 是每站点尺度，网络整体带 `scaling^L`。
 
 ```julia
-import MOSSQuantumMPS.MPSCore as C
+import MOSSMPS.MPSCore as C
 using LinearAlgebra
 psi = C.prodmps(ComplexF64, [2, 2], [1, 1]) # 局域状态索引从 1 开始
 @assert norm(psi) ≈ 1
@@ -134,7 +134,7 @@ u, s, vt, err = C.tsvd([1.0 0; 0 0.5]; trunc=C.NoTruncation())
 Abstract type for tensor truncation schemes, specifying how singular values are truncated (by dimension, by truncation error, or both).
 
 
-源码：[src/mpscore/tensorops/truncation.jl:3](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L3)
+源码：[src/mpscore/tensorops/truncation.jl:3](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L3)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -155,7 +155,7 @@ abstract type TruncationScheme end
 A truncation scheme that performs no truncation, keeping all singular values.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:11](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L11)
+源码：[src/mpscore/tensorops/truncation.jl:11](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L11)
 
 
 
@@ -213,7 +213,7 @@ A truncation scheme combining dimension and cutoff: the truncation point is firs
 then capped at `D` singular values while keeping at least `add_back` of them.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:49](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L49)
+源码：[src/mpscore/tensorops/truncation.jl:49](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L49)
 
 
 
@@ -227,7 +227,7 @@ then capped at `D` singular values while keeping at least `add_back` of them.
 Construct a dimension-truncated scheme `TruncateDim(d)` that keeps only the `d` largest singular values.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:22](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L22)
+源码：[src/mpscore/tensorops/truncation.jl:22](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L22)
 
 
     truncdim(; D::Int)
@@ -235,7 +235,7 @@ Construct a dimension-truncated scheme `TruncateDim(d)` that keeps only the `d` 
 Keyword form of the dimension-truncated scheme constructor, equivalent to `truncdim(D)`.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:28](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L28)
+源码：[src/mpscore/tensorops/truncation.jl:28](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L28)
 
 
 
@@ -250,7 +250,7 @@ Keyword form of the dimension-truncated scheme constructor, equivalent to `trunc
 Construct a `TruncateRelError` scheme that discards singular values with relative norm below `ϵ`.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:39](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L39)
+源码：[src/mpscore/tensorops/truncation.jl:39](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L39)
 
 
 
@@ -264,7 +264,7 @@ Construct a `TruncateRelError` scheme that discards singular values with relativ
 Positional-argument convenience constructor for `TruncateDimCutoff`, equivalent to `TruncateDimCutoff(D, ϵ, add_back)`.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:62](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L62)
+源码：[src/mpscore/tensorops/truncation.jl:62](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L62)
 
 
     truncdimcutoff(; D, ϵ, add_back=0)
@@ -272,7 +272,7 @@ Positional-argument convenience constructor for `TruncateDimCutoff`, equivalent 
 Keyword convenience constructor for `TruncateDimCutoff`, equivalent to `TruncateDimCutoff(D, ϵ, add_back)`.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:68](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L68)
+源码：[src/mpscore/tensorops/truncation.jl:68](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L68)
 
 
 
@@ -287,7 +287,7 @@ Truncate `ψ` by canonicalizing with an SVD sweep under the truncation scheme `t
 Returns `ψ` and the maximal truncation error.
 
 
-源码：[src/mpscore/states/initializers.jl:168](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L168)
+源码：[src/mpscore/states/initializers.jl:168](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L168)
 
 
 	truncate!(ρ::CanonicalMPO; trunc=Defaults.alg_orth_trunc()) -> (ρ, err)
@@ -297,7 +297,7 @@ scheme `trunc` (the operator-space analog of the `CanonicalMPS` method). Returns
 `ρ` and the maximal truncation error.
 
 
-源码：[src/mpscore/states/initializers.jl:177](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L177)
+源码：[src/mpscore/states/initializers.jl:177](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L177)
 
 
     truncate!(v, trunc, p=2) -> (v′, err)
@@ -306,7 +306,7 @@ Public wrapper of the internal `_truncate!`: truncate the (descending) singular 
 according to `trunc`, returning the truncated vector and the (relative for cutoff schemes) error.
 
 
-源码：[src/mpscore/tensorops/truncation.jl:104](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/truncation.jl#L104)
+源码：[src/mpscore/tensorops/truncation.jl:104](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/truncation.jl#L104)
 
 
 
@@ -469,7 +469,7 @@ Note: the input matrix `a` is used as workspace and may be **destroyed** in plac
 pass a copy if the input must be preserved.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:72](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L72)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:72](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L72)
 
 
     tsvd!(a, left, right; trunc=NoTruncation(), alg=SDD())
@@ -493,7 +493,7 @@ internally, since the decomposition requires a contiguous workspace); the `!` ma
 variant that reuses that copy as workspace.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:115](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L115)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:115](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L115)
 
 
 
@@ -509,7 +509,7 @@ decomposition (see the matrix method for the reconstruction convention and the f
 properties).
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:106](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L106)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:106](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L106)
 
 
     tsvd(a, left, right; trunc=NoTruncation(), alg=SDD())
@@ -518,7 +518,7 @@ Non-mutating version of `tsvd!`: the input tensor is copied before the
 decomposition.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:145](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L145)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:145](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L145)
 
 
 
@@ -533,7 +533,7 @@ Orthogonalize `ψ` into left-canonical form (in place). `SVD` paths record bond 
 and support truncation; `QR` ignores truncation.
 
 
-源码：[src/mpscore/states/orth.jl:29](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L29)
+源码：[src/mpscore/states/orth.jl:29](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L29)
 
 
 	leftorth!(ρ::CanonicalMPO; alg::Orthogonalize=Orthogonalize(QR()))
@@ -541,7 +541,7 @@ and support truncation; `QR` ignores truncation.
 Orthogonalize the density-matrix chain into left-canonical form (in place).
 
 
-源码：[src/mpscore/states/orth.jl:148](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L148)
+源码：[src/mpscore/states/orth.jl:148](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L148)
 
 
 	leftorth!(A, alg, atol=0)
@@ -554,7 +554,7 @@ decomposition). Returns `(Q, R)`.
 Note: the input `A` is used as workspace and may be **destroyed/overwritten**; pass a copy if the input must be preserved.
 
 
-源码：[src/mpscore/tensorops/matrixalgebra.jl:36](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/matrixalgebra.jl#L36)
+源码：[src/mpscore/tensorops/matrixalgebra.jl:36](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/matrixalgebra.jl#L36)
 
 
     leftorth!(A; alg=QRpos(), atol=0)
@@ -562,7 +562,7 @@ Note: the input `A` is used as workspace and may be **destroyed/overwritten**; p
 Keyword version of `leftorth!` acting on plain matrices, equivalent to `leftorth!(A, alg, atol)`.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:153](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L153)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:153](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L153)
 
 
     leftorth!(A, left, right; alg=QRpos(), atol=0)
@@ -574,7 +574,7 @@ Note: the input tensor `A` itself is not modified (the permuted matrix is copied
 factorization requires a contiguous workspace); the `!` marks the variant that reuses that copy as workspace.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:159](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L159)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:159](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L159)
 
 
 
@@ -589,7 +589,7 @@ factorization requires a contiguous workspace); the `!` marks the variant that r
 Non-mutating version of `leftorth!`: the input is copied before orthogonalization.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:177](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L177)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:177](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L177)
 
 
 
@@ -604,7 +604,7 @@ Orthogonalize `ψ` into right-canonical form (in place); the Schmidt values of a
 recorded (normalized, with the norm carried by `scaling`).
 
 
-源码：[src/mpscore/states/orth.jl:73](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L73)
+源码：[src/mpscore/states/orth.jl:73](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L73)
 
 
 	rightorth!(ρ::CanonicalMPO; alg::Orthogonalize=Orthogonalize(SVD(), normalize=false))
@@ -613,7 +613,7 @@ Orthogonalize the density-matrix chain into right-canonical form (in place); the
 values of all bonds are recorded.
 
 
-源码：[src/mpscore/states/orth.jl:193](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L193)
+源码：[src/mpscore/states/orth.jl:193](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L193)
 
 
 	rightorth!(A, alg, atol=0)
@@ -626,7 +626,7 @@ decomposition). Returns `(L, Q)`.
 Note: the input `A` is used as workspace and may be **destroyed/overwritten**; pass a copy if the input must be preserved.
 
 
-源码：[src/mpscore/tensorops/matrixalgebra.jl:61](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/matrixalgebra.jl#L61)
+源码：[src/mpscore/tensorops/matrixalgebra.jl:61](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/matrixalgebra.jl#L61)
 
 
     rightorth!(A; alg=LQpos(), atol=0)
@@ -634,7 +634,7 @@ Note: the input `A` is used as workspace and may be **destroyed/overwritten**; p
 Keyword version of `rightorth!` acting on plain matrices, equivalent to `rightorth!(A, alg, atol)`.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:186](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L186)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:186](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L186)
 
 
     rightorth!(A, left, right; alg=LQpos(), atol=0)
@@ -646,7 +646,7 @@ Note: the input tensor `A` itself is not modified (the permuted matrix is copied
 factorization requires a contiguous workspace); the `!` marks the variant that reuses that copy as workspace.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:192](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L192)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:192](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L192)
 
 
 
@@ -661,7 +661,7 @@ factorization requires a contiguous workspace); the `!` marks the variant that r
 Non-mutating version of `rightorth!`: the input is copied before orthogonalization.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:210](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L210)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:210](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L210)
 
 
 
@@ -696,7 +696,7 @@ Non-mutating `permute!`: the site contents of `x` reordered according to
 `permute` of the tensorops layer.
 
 
-源码：[src/mpscore/states/linalg.jl:238](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L238)
+源码：[src/mpscore/states/linalg.jl:238](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L238)
 
 
     permute(m::AbstractArray, perm)
@@ -704,7 +704,7 @@ Non-mutating `permute!`: the site contents of `x` reordered according to
 Return a view of `m` with its dimensions permuted according to `perm` (a `PermutedDimsArray`), without copying data.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:7](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L7)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:7](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L7)
 
 
     permute(m::AbstractArray, left, right)
@@ -712,7 +712,7 @@ Return a view of `m` with its dimensions permuted according to `perm` (a `Permut
 Group the dimensions into `left` and `right` and place them in that order, equivalent to `permute(m, (left..., right...))`.
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:13](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L13)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:13](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L13)
 
 
 
@@ -748,7 +748,7 @@ scalar(x::AbstractArray{T}) where {T<:Number} = only(x)
 Return the rectangular identity (isometry) matrix of size `m × n` (`d × d`) with element type `T` (default `Float64`).
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:34](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L34)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:34](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L34)
 
 
 
@@ -764,7 +764,7 @@ and otherwise it is `1/(1-α) * log(Σᵢ vᵢ^α)`.
 The entries of `v` must be nonnegative and sum to 1 (e.g. normalized squared singular values).
 
 
-源码：[src/mpscore/tensorops/tensorfactorizations.jl:232](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L232)
+源码：[src/mpscore/tensorops/tensorfactorizations.jl:232](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/tensorfactorizations.jl#L232)
 
 
 
@@ -779,7 +779,7 @@ The entries of `v` must be nonnegative and sum to 1 (e.g. normalized squared sin
 Distance between two states, based on overlaps and including `scaling` factors.
 
 
-源码：[src/mpscore/states/linalg.jl:137](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L137)
+源码：[src/mpscore/states/linalg.jl:137](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L137)
 
 
     distance(x, y)
@@ -787,7 +787,7 @@ Distance between two states, based on overlaps and including `scaling` factors.
 The 2-norm distance between two arrays (or tensor networks) of the same shape, equal to `sqrt(distance2(x, y))`.
 
 
-源码：[src/mpscore/tensorops/distance.jl:24](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/distance.jl#L24)
+源码：[src/mpscore/tensorops/distance.jl:24](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/distance.jl#L24)
 
 
 
@@ -802,7 +802,7 @@ The 2-norm distance between two arrays (or tensor networks) of the same shape, e
 Distance between two states, based on overlaps and including `scaling` factors.
 
 
-源码：[src/mpscore/states/linalg.jl:137](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L137)
+源码：[src/mpscore/states/linalg.jl:137](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L137)
 
 
     distance2(x, y)
@@ -814,7 +814,7 @@ Compute the squared distance between two arrays (or tensor networks) of the same
 Typically used to verify the accuracy of tensor network multiplication against a naive reference implementation. See also `distance`.
 
 
-源码：[src/mpscore/tensorops/distance.jl:14](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/tensorops/distance.jl#L14)
+源码：[src/mpscore/tensorops/distance.jl:14](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/tensorops/distance.jl#L14)
 
 
 
@@ -835,7 +835,7 @@ computed from the raw (scale-free) contractions — the `scaling` factors cancel
 so it stays finite for arbitrarily large scalings.
 
 
-源码：[src/mpscore/operators/linalg.jl:206](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/linalg.jl#L206)
+源码：[src/mpscore/operators/linalg.jl:206](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/linalg.jl#L206)
 
 
 	fidelity(ψA::CanonicalMPS, ψB::CanonicalMPS) -> Real
@@ -848,7 +848,7 @@ contractions — the `scaling` factors cancel exactly (equivalent to the direct 
 with `dot`/`norm`), so it stays finite for arbitrarily large scalings.
 
 
-源码：[src/mpscore/states/linalg.jl:152](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L152)
+源码：[src/mpscore/states/linalg.jl:152](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L152)
 
 
 
@@ -864,7 +864,7 @@ with `dot`/`norm`), so it stays finite for arbitrarily large scalings.
 The complement of `fidelity`: `1 - fidelity`.
 
 
-源码：[src/mpscore/operators/linalg.jl:228](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/linalg.jl#L228)
+源码：[src/mpscore/operators/linalg.jl:228](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/linalg.jl#L228)
 
 
 	infidelity(ψA::CanonicalMPS, ψB::CanonicalMPS) -> Real
@@ -872,7 +872,7 @@ The complement of `fidelity`: `1 - fidelity`.
 The complement of `fidelity`: `1 - fidelity`.
 
 
-源码：[src/mpscore/states/linalg.jl:167](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L167)
+源码：[src/mpscore/states/linalg.jl:167](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L167)
 
 
 
@@ -973,7 +973,7 @@ Site tensor conventions:
 - `scaling::Ref{Float64}`: per-site overall scaling factor (total scaling = `scaling^L`)
 
 
-源码：[src/mpscore/states/canonicalmps.jl:4](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmps.jl#L4)
+源码：[src/mpscore/states/canonicalmps.jl:4](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmps.jl#L4)
 
 
     CanonicalMPS(::Type{T}, ds) -> CanonicalMPS
@@ -982,7 +982,7 @@ Site tensor conventions:
 A bond-dimension-1 `CanonicalMPS` of all-ones site tensors with physical dimensions `ds`.
 
 
-源码：[src/mpscore/states/canonicalmps.jl:46](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmps.jl#L46)
+源码：[src/mpscore/states/canonicalmps.jl:46](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmps.jl#L46)
 
 
 
@@ -1004,7 +1004,7 @@ Site tensor conventions:
 Fields `s` and `scaling` follow the same conventions as `CanonicalMPS`.
 
 
-源码：[src/mpscore/states/canonicalmpo.jl:5](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmpo.jl#L5)
+源码：[src/mpscore/states/canonicalmpo.jl:5](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmpo.jl#L5)
 
 
     CanonicalMPO(::Type{T}, ds) -> CanonicalMPO
@@ -1013,7 +1013,7 @@ Fields `s` and `scaling` follow the same conventions as `CanonicalMPS`.
 The identity `CanonicalMPO` with vacuum boundaries: site tensors `reshape(isometry(T, d), 1, d, 1, d)`.
 
 
-源码：[src/mpscore/states/canonicalmpo.jl:44](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmpo.jl#L44)
+源码：[src/mpscore/states/canonicalmpo.jl:44](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmpo.jl#L44)
 
 
 
@@ -1033,7 +1033,7 @@ Site tensor conventions:
 - Dimension 4: input physical index
 
 
-源码：[src/mpscore/operators/mpo.jl:4](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/mpo.jl#L4)
+源码：[src/mpscore/operators/mpo.jl:4](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/mpo.jl#L4)
 
 
     MPO(::Type{T}, ds) -> MPO
@@ -1041,7 +1041,7 @@ Site tensor conventions:
 The identity `MPO`: site tensors `reshape(isometry(T, d), 1, d, 1, d)` with bond dimension 1.
 
 
-源码：[src/mpscore/operators/mpo.jl:26](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/mpo.jl#L26)
+源码：[src/mpscore/operators/mpo.jl:26](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/mpo.jl#L26)
 
 
 
@@ -1058,7 +1058,7 @@ per-site `SchurMPOTensor`s of `s`, with the optional on-site term `hloc` in
 every `D` corner).
 
 
-源码：[src/mpscore/operators/longrangeop.jl:143](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/longrangeop.jl#L143)
+源码：[src/mpscore/operators/longrangeop.jl:143](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/longrangeop.jl#L143)
 
 
 	MPOHamiltonian(s::ExpDecayOpSum, hlocs::AbstractVector{<:AbstractMatrix}) -> MPOHamiltonian
@@ -1069,7 +1069,7 @@ must match the common local dimension `phydim(s)`; the operator content may diff
 site to site).
 
 
-源码：[src/mpscore/operators/longrangeop.jl:156](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/longrangeop.jl#L156)
+源码：[src/mpscore/operators/longrangeop.jl:156](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/longrangeop.jl#L156)
 
 
 	MPOHamiltonian(t::PairOpTerm, [hloc]) -> MPOHamiltonian
@@ -1081,7 +1081,7 @@ same on every site) — or the per-site operators `hlocs` (each `hlocs[s]` at si
 operator content may differ) — accumulates in the `D` corners.
 
 
-源码：[src/mpscore/operators/longrangeop.jl:264](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/longrangeop.jl#L264)
+源码：[src/mpscore/operators/longrangeop.jl:264](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/longrangeop.jl#L264)
 
 
 	MPOHamiltonian{T<:Number}
@@ -1104,7 +1104,7 @@ convert to the dense 4-index chain with `MPO(h)` / `tompotensors`.
 This is the standard operator input of `ground_state`, `excited_state` and TDVP1.
 
 
-源码：[src/mpscore/operators/mpohamiltonian.jl:5](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/mpohamiltonian.jl#L5)
+源码：[src/mpscore/operators/mpohamiltonian.jl:5](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/mpohamiltonian.jl#L5)
 
 
 	MPOHamiltonian(L::Int, terms::OpTerm...)
@@ -1126,7 +1126,7 @@ operator of every term must share one `d` (otherwise it throws a `DimensionMisma
 per-site dimensions, where every operator is validated against its own `ds[pos]`.
 
 
-源码：[src/mpscore/operators/mpohamiltonian.jl:112](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/mpohamiltonian.jl#L112)
+源码：[src/mpscore/operators/mpohamiltonian.jl:112](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/mpohamiltonian.jl#L112)
 
 
 
@@ -1146,7 +1146,7 @@ Configuration of the orthogonalization scheme, used by `leftorth!`, `rightorth!`
 - `verbosity::Int`: verbosity level
 
 
-源码：[src/mpscore/abstractdefs.jl:12](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/abstractdefs.jl#L12)
+源码：[src/mpscore/abstractdefs.jl:12](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/abstractdefs.jl#L12)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -1174,7 +1174,7 @@ local operator. The logical block matrix may be rectangular — the left and rig
 channel spaces (`size(W, 1)` / `size(W, 2)`) may differ.
 
 
-源码：[src/mpscore/operators/schurmpotensor.jl:34](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/schurmpotensor.jl#L34)
+源码：[src/mpscore/operators/schurmpotensor.jl:34](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/schurmpotensor.jl#L34)
 
 
 	SchurMPOTensor(W::AbstractMatrix) -> SchurMPOTensor
@@ -1185,7 +1185,7 @@ operator from row `i` (left level) to column `j` (right level); entries may be
 identities (entries should be `1` or `Missing`).
 
 
-源码：[src/mpscore/operators/schurmpotensor.jl:124](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/schurmpotensor.jl#L124)
+源码：[src/mpscore/operators/schurmpotensor.jl:124](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/schurmpotensor.jl#L124)
 
 
 
@@ -1228,7 +1228,7 @@ multiplied by a number (`x * term`, `term * x`) and evaluated at a real time
 (`term(t)` freezes the coefficient at `t`).
 
 
-源码：[src/mpscore/operators/opsum.jl:35](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/opsum.jl#L35)
+源码：[src/mpscore/operators/opsum.jl:35](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/opsum.jl#L35)
 
 
 
@@ -1256,7 +1256,7 @@ operators default to the first term's dimension). A sum can be multiplied by a n
 coefficient at `t`).
 
 
-源码：[src/mpscore/operators/opsum.jl:119](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/opsum.jl#L119)
+源码：[src/mpscore/operators/opsum.jl:119](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/opsum.jl#L119)
 
 
 
@@ -1277,7 +1277,7 @@ ignores `t`), `isconstant` says whether it is time-independent, and
 Time-dependent coefficients are only supported by `trotter_propagator`.
 
 
-源码：[src/mpscore/operators/opsum.jl:4](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/opsum.jl#L4)
+源码：[src/mpscore/operators/opsum.jl:4](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/opsum.jl#L4)
 
 
 
@@ -1294,7 +1294,7 @@ time-independent. Time-dependent terms are only supported by
 `trotter_propagator`; every other consumer requires `isconstant == true`.
 
 
-源码：[src/mpscore/operators/opsum.jl:150](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/opsum.jl#L150)
+源码：[src/mpscore/operators/opsum.jl:150](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/opsum.jl#L150)
 
 
 
@@ -1309,7 +1309,7 @@ time-independent. Time-dependent terms are only supported by
 Convenience constructor of `OpTerm` (coefficient defaults to 1).
 
 
-源码：[src/mpscore/operators/opsum.jl:110](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/opsum.jl#L110)
+源码：[src/mpscore/operators/opsum.jl:110](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/opsum.jl#L110)
 
 
 
@@ -1325,7 +1325,7 @@ channels live at level `1` and level `space_r`, i.e.
 `Wd[1,:,1,:] = Wd[end,:,end,:] = I`.
 
 
-源码：[src/mpscore/operators/schurmpotensor.jl:167](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/schurmpotensor.jl#L167)
+源码：[src/mpscore/operators/schurmpotensor.jl:167](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/schurmpotensor.jl#L167)
 
 
 
@@ -1341,7 +1341,7 @@ Convert an `MPOHamiltonian` to the list of dense 4-index site tensors of a finit
 (last channel) at the last site.
 
 
-源码：[src/mpscore/operators/mpohamiltonian.jl:78](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/mpohamiltonian.jl#L78)
+源码：[src/mpscore/operators/mpohamiltonian.jl:78](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/mpohamiltonian.jl#L78)
 
 
 
@@ -1367,7 +1367,7 @@ The `scaling` of a `CanonicalMPO` is included as `scaling(h)^L`, applied **per s
 during the contraction** (no `scaling^L` power is materialized).
 
 
-源码：[src/mpscore/operators/linalg.jl:302](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/linalg.jl#L302)
+源码：[src/mpscore/operators/linalg.jl:302](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/linalg.jl#L302)
 
 
 	todense(h::MPOHamiltonian) -> Matrix
@@ -1377,7 +1377,7 @@ Dense matrix of the Hamiltonian MPO: the block-sparse chain is expanded with
 convention.
 
 
-源码：[src/mpscore/operators/linalg.jl:407](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/linalg.jl#L407)
+源码：[src/mpscore/operators/linalg.jl:407](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/linalg.jl#L407)
 
 
 	todense(ψ::CanonicalMPS; order=:msb) -> Vector
@@ -1399,7 +1399,7 @@ contraction** (no `scaling^L` power is materialized); the Schmidt vectors are no
 (the site tensors carry the full state).
 
 
-源码：[src/mpscore/states/observables.jl:43](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/observables.jl#L43)
+源码：[src/mpscore/states/observables.jl:43](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/observables.jl#L43)
 
 
 
@@ -1417,7 +1417,7 @@ length with per-site physical dimension `d_out·d_in`. Bond dimensions and the `
 of a `CanonicalMPO` are carried over; the Schmidt values are reset.
 
 
-源码：[src/mpscore/operators/vectorize.jl:13](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/vectorize.jl#L13)
+源码：[src/mpscore/operators/vectorize.jl:13](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/vectorize.jl#L13)
 
 
 
@@ -1434,7 +1434,7 @@ output/input dimensions). Bond dimensions and the `scaling` of a `CanonicalMPS` 
 carried over; the Schmidt values are reset.
 
 
-源码：[src/mpscore/operators/vectorize.jl:38](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/vectorize.jl#L38)
+源码：[src/mpscore/operators/vectorize.jl:38](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/vectorize.jl#L38)
 
 
 
@@ -1465,7 +1465,7 @@ is deliberately not a `Base.kron` overload.) The `scaling` of `CanonicalMPO` inp
 NOT folded (data-level convention).
 
 
-源码：[src/mpscore/operators/vectorize.jl:75](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/vectorize.jl#L75)
+源码：[src/mpscore/operators/vectorize.jl:75](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/vectorize.jl#L75)
 
 
 	superoperator(h::MPO, side=:left) -> MPO
@@ -1488,7 +1488,7 @@ while plain `MPO` / `MPOHamiltonian` inputs have no external scale. The `side` m
 be given as the keyword `side = :left`.
 
 
-源码：[src/mpscore/operators/vectorize.jl:113](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/vectorize.jl#L113)
+源码：[src/mpscore/operators/vectorize.jl:113](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/vectorize.jl#L113)
 
 
 
@@ -1507,7 +1507,7 @@ overall strength. The 4-argument form takes the propagator `m` to be the identit
 Converts directly to a `SchurMPOTensor`.
 
 
-源码：[src/mpscore/operators/longrangeop.jl:33](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/longrangeop.jl#L33)
+源码：[src/mpscore/operators/longrangeop.jl:33](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/longrangeop.jl#L33)
 
 
 
@@ -1524,7 +1524,7 @@ propagator `m` to be the identity. Converts directly to a
 `SchurMPOTensor` with one internal channel per pair.
 
 
-源码：[src/mpscore/operators/longrangeop.jl:72](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/longrangeop.jl#L72)
+源码：[src/mpscore/operators/longrangeop.jl:72](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/longrangeop.jl#L72)
 
 
 
@@ -1547,7 +1547,7 @@ Converts to per-site `SchurMPOTensor`s in the finite-state-machine layout (one
 channel per coupled starting site, bond dimension `L + 1`).
 
 
-源码：[src/mpscore/operators/longrangeop.jl:181](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/longrangeop.jl#L181)
+源码：[src/mpscore/operators/longrangeop.jl:181](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/longrangeop.jl#L181)
 
 
 
@@ -1604,7 +1604,7 @@ Whether `ψ` is in canonical form: all site tensors right-orthogonal, all Schmid
 initialized, and on every bond `Diagonal(s.^2) ≈` the left environment.
 
 
-源码：[src/mpscore/states/orth.jl:266](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L266)
+源码：[src/mpscore/states/orth.jl:266](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L266)
 
 
 
@@ -1622,7 +1622,7 @@ says so). After the call `ψ` is right-canonical with all Schmidt values initial
 `ψ` and the maximal truncation error of the right sweep.
 
 
-源码：[src/mpscore/states/orth.jl:117](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L117)
+源码：[src/mpscore/states/orth.jl:117](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L117)
 
 
 	canonicalize!(ρ::CanonicalMPO; alg::Orthogonalize=Orthogonalize(SVD(), Defaults.alg_orth_trunc(), false))
@@ -1632,7 +1632,7 @@ Transform the density-matrix chain into canonical form (in place): QR left sweep
 right sweep. Returns `ρ` and the maximal truncation error of the right sweep.
 
 
-源码：[src/mpscore/states/orth.jl:239](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L239)
+源码：[src/mpscore/states/orth.jl:239](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L239)
 
 
 
@@ -1688,7 +1688,7 @@ gate breaks the *gauge* property outright, so `canonicalize` defaults to
 under `trunc`) after every non-unitary gate.
 
 
-源码：[src/mpscore/gates.jl:176](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L176)
+源码：[src/mpscore/gates.jl:176](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L176)
 
 
 	canonicalize(ψ::CanonicalMPS; kwargs...) -> (ψ′, err)
@@ -1697,7 +1697,7 @@ Non-mutating version of `canonicalize!`: returns the canonicalized copy and the
 maximal truncation error.
 
 
-源码：[src/mpscore/states/orth.jl:129](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/orth.jl#L129)
+源码：[src/mpscore/states/orth.jl:129](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/orth.jl#L129)
 
 
 
@@ -1760,7 +1760,7 @@ The physical dimension of an `MPOTensor`; for a square operator this is the comm
 the output (`ophydim`) and input (`iphydim`) dimensions, otherwise a `DimensionMismatch` is thrown.
 
 
-源码：[src/mpscore/abstractdefs.jl:52](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/abstractdefs.jl#L52)
+源码：[src/mpscore/abstractdefs.jl:52](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/abstractdefs.jl#L52)
 
 
 
@@ -1875,7 +1875,7 @@ Bond dimension at bond `b` (bond `b` lies between site `b` and `b+1`), the vecto
 dimensions, and the maximal bond dimension.
 
 
-源码：[src/mpscore/abstractdefs.jl:88](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/abstractdefs.jl#L88)
+源码：[src/mpscore/abstractdefs.jl:88](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/abstractdefs.jl#L88)
 
 
 
@@ -1892,7 +1892,7 @@ Bond dimension at bond `b` (bond `b` lies between site `b` and `b+1`), the vecto
 dimensions, and the maximal bond dimension.
 
 
-源码：[src/mpscore/abstractdefs.jl:88](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/abstractdefs.jl#L88)
+源码：[src/mpscore/abstractdefs.jl:88](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/abstractdefs.jl#L88)
 
 
 
@@ -1944,7 +1944,7 @@ setscaling!(x::Union{CanonicalMPS,CanonicalMPO}, s::Real) = (x.scaling[] = s; x)
 Whether any internal bond of `ψ` has uninitialized (`missing`) Schmidt values.
 
 
-源码：[src/mpscore/states/canonicalmps.jl:70](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmps.jl#L70)
+源码：[src/mpscore/states/canonicalmps.jl:70](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmps.jl#L70)
 
 
 
@@ -1958,7 +1958,7 @@ Whether any internal bond of `ψ` has uninitialized (`missing`) Schmidt values.
 Reset all internal Schmidt values to `missing` (boundary bonds keep their trivial `ones(1)`).
 
 
-源码：[src/mpscore/states/canonicalmps.jl:77](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmps.jl#L77)
+源码：[src/mpscore/states/canonicalmps.jl:77](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmps.jl#L77)
 
 
 
@@ -1974,7 +1974,7 @@ the trace deficit is folded into the `scaling` field (the represented state
 `scaling^L · (data contraction)` is rescaled to unit trace by rescaling `scaling`).
 
 
-源码：[src/mpscore/states/canonicalmpo.jl:74](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/canonicalmpo.jl#L74)
+源码：[src/mpscore/states/canonicalmpo.jl:74](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/canonicalmpo.jl#L74)
 
 
 
@@ -1994,7 +1994,7 @@ acts on (a 4×4 conjugation plus a Pauli decomposition). The conjugated string i
 contracted with the MPS directly; no circuit is ever applied to the state itself.
 
 
-源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:434](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L434)
+源码：[src/mpsalgorithms/algorithms/experimental/cadmrg.jl:434](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpsalgorithms/algorithms/experimental/cadmrg.jl#L434)
 
 
 	expectation(ψA::CanonicalMPS, h::AbstractMPO, ψB::CanonicalMPS) -> Number
@@ -2008,7 +2008,7 @@ The matrix element `⟨ψA|h|ψB⟩` of the represented chains (no normalization
 	for debugging on small systems; use `expectationvalue` instead.
 
 
-源码：[src/mpscore/expectation.jl:11](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/expectation.jl#L11)
+源码：[src/mpscore/expectation.jl:11](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/expectation.jl#L11)
 
 
 	expectation(h::AbstractMPO, ψ::CanonicalMPS) -> Number
@@ -2023,7 +2023,7 @@ The (unnormalized) expectation value of the represented chains: `⟨ψ|h|ψ⟩` 
 	systems; use `expectationvalue` instead.
 
 
-源码：[src/mpscore/expectation.jl:38](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/expectation.jl#L38)
+源码：[src/mpscore/expectation.jl:38](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/expectation.jl#L38)
 
 
 	expectation(op::OpTerm, ψ::CanonicalMPS) -> Number
@@ -2039,7 +2039,7 @@ contracted (sites in between the term's operators pass the environment through u
 	`expectationvalue` instead.
 
 
-源码：[src/mpscore/expectation.jl:67](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/expectation.jl#L67)
+源码：[src/mpscore/expectation.jl:67](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/expectation.jl#L67)
 
 
 	expectation(op::OpTerm, ρ::CanonicalMPO) -> Number
@@ -2056,7 +2056,7 @@ reuses the pre-computed trace environments of `ρ` across many observables.
 	`expectationvalue` instead.
 
 
-源码：[src/mpscore/expectation.jl:182](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/expectation.jl#L182)
+源码：[src/mpscore/expectation.jl:182](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/expectation.jl#L182)
 
 
 
@@ -2079,7 +2079,7 @@ overflow (unlike `expectation`); the `scaling^L` of a `CanonicalMPO` operator
 `h` is part of the represented value `h` and is kept.
 
 
-源码：[src/mpscore/expectation.jl:215](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/expectation.jl#L215)
+源码：[src/mpscore/expectation.jl:215](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/expectation.jl#L215)
 
 
 
@@ -2094,7 +2094,7 @@ Rényi entropy `α` of the Schmidt spectrum at `bond` (`α = 1` gives the von Ne
 Requires the canonical form (initialized Schmidt values).
 
 
-源码：[src/mpscore/states/observables.jl:13](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/observables.jl#L13)
+源码：[src/mpscore/states/observables.jl:13](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/observables.jl#L13)
 
 
 
@@ -2108,7 +2108,7 @@ Requires the canonical form (initialized Schmidt values).
 The Schmidt spectrum (squared Schmidt values) at `bond`.
 
 
-源码：[src/mpscore/states/observables.jl:24](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/observables.jl#L24)
+源码：[src/mpscore/states/observables.jl:24](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/observables.jl#L24)
 
 
 
@@ -2122,7 +2122,7 @@ The Schmidt spectrum (squared Schmidt values) at `bond`.
 The Schmidt values at `bond` (equivalent to `x.s[bond+1]`).
 
 
-源码：[src/mpscore/states/observables.jl:34](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/observables.jl#L34)
+源码：[src/mpscore/states/observables.jl:34](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/observables.jl#L34)
 
 
 
@@ -2138,7 +2138,7 @@ Product states: one-hot basis states (`states[i]` is the occupied basis index of
 or general product states from per-site amplitude vectors.
 
 
-源码：[src/mpscore/states/initializers.jl:23](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L23)
+源码：[src/mpscore/states/initializers.jl:23](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L23)
 
 
 
@@ -2155,7 +2155,7 @@ state is normalized (total norm 1); otherwise the data keeps its natural magnitu
 the external scale stays in the `scaling` field.
 
 
-源码：[src/mpscore/states/initializers.jl:45](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L45)
+源码：[src/mpscore/states/initializers.jl:45](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L45)
 
 
 
@@ -2170,7 +2170,7 @@ The pure-state density matrix `ρ = |ψ⟩⟨ψ|` in operator (MPO) form: site t
 per-site tensor products `ψᵢ ⊗ conj(ψᵢ)` with fused bond indices (bond dimensions squared).
 
 
-源码：[src/mpscore/states/initializers.jl:96](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L96)
+源码：[src/mpscore/states/initializers.jl:96](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L96)
 
 
 
@@ -2184,7 +2184,7 @@ per-site tensor products `ψᵢ ⊗ conj(ψᵢ)` with fused bond indices (bond d
 The infinite-temperature state `I/prod(ds)` as a `CanonicalMPO` (`tr(ρ) = 1`).
 
 
-源码：[src/mpscore/states/initializers.jl:115](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L115)
+源码：[src/mpscore/states/initializers.jl:115](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L115)
 
 
 
@@ -2209,7 +2209,7 @@ being carried by `scaling`. This is the gauge the sweeps expect from an initial 
 Used to prepare initial guesses of the ALS operator products.
 
 
-源码：[src/mpscore/operators/initializers.jl:39](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/initializers.jl#L39)
+源码：[src/mpscore/operators/initializers.jl:39](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/initializers.jl#L39)
 
 
 	changebond!(ψ::CanonicalMPS; D=Defaults.D, noise=1e-10) -> ψ
@@ -2230,7 +2230,7 @@ iterative algorithms (`DMRG1`, `TDVP1`, ...) expect from an initial guess. Used 
 initial guesses with bond headroom.
 
 
-源码：[src/mpscore/states/initializers.jl:126](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L126)
+源码：[src/mpscore/states/initializers.jl:126](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L126)
 
 
 
@@ -2244,7 +2244,7 @@ initial guesses with bond headroom.
 The identity operator chain with bond dimension 1 (equivalent to `MPO(T, ds)`).
 
 
-源码：[src/mpscore/operators/initializers.jl:3](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/initializers.jl#L3)
+源码：[src/mpscore/operators/initializers.jl:3](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/initializers.jl#L3)
 
 
 
@@ -2261,7 +2261,7 @@ A bond-dimension-1 product chain for one operator term: `ops[i]` acts on `positi
 identity. Use the exact `+`/`*` on `MPO` to assemble general Hamiltonians.
 
 
-源码：[src/mpscore/operators/initializers.jl:10](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/initializers.jl#L10)
+源码：[src/mpscore/operators/initializers.jl:10](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/initializers.jl#L10)
 
 
 
@@ -2280,7 +2280,7 @@ by the state-space bounds from both chain ends), brought to canonical form. With
 `scaling` field.
 
 
-源码：[src/mpscore/states/initializers.jl:70](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/initializers.jl#L70)
+源码：[src/mpscore/states/initializers.jl:70](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/initializers.jl#L70)
 
 
 
@@ -2300,7 +2300,7 @@ shared and the bond indices are fused pairwise, so the bond dimensions multiply
 The compressed (finite-bond) approximation is obtained via `hadamard`.
 
 
-源码：[src/mpscore/states/linalg.jl:107](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L107)
+源码：[src/mpscore/states/linalg.jl:107](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L107)
 
 
 
@@ -2321,7 +2321,7 @@ canonical conditions, so the Schmidt values of the result are uninitialized (as 
 any freshly constructed chain).
 
 
-源码：[src/mpscore/states/linalg.jl:193](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/linalg.jl#L193)
+源码：[src/mpscore/states/linalg.jl:193](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/linalg.jl#L193)
 
 
 
@@ -2350,7 +2350,7 @@ the result is exact whenever every intermediate rank stays within the cap. Any
 external norm of `v` is folded into the chain `scaling`.
 
 
-源码：[src/mpscore/states/observables.jl:82](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/states/observables.jl#L82)
+源码：[src/mpscore/states/observables.jl:82](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/states/observables.jl#L82)
 
 
 
@@ -2378,7 +2378,7 @@ default); with a bond-cap scheme the result is exact whenever every intermediate
 stays within the cap. Any external scale of `M` is folded into the chain `scaling`.
 
 
-源码：[src/mpscore/operators/linalg.jl:339](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/operators/linalg.jl#L339)
+源码：[src/mpscore/operators/linalg.jl:339](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/operators/linalg.jl#L339)
 
 
 
@@ -2395,7 +2395,7 @@ convention `(i1', i2', …, iN', i1, …, iN)`, i.e. all bra (output) indices fi
 ket (input) indices second, each block ordered with site 1 the slowest index.
 
 
-源码：[src/mpscore/gates.jl:6](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L6)
+源码：[src/mpscore/gates.jl:6](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L6)
 
 
 实际声明（类型参数与关键字默认值以源码为准）：
@@ -2437,7 +2437,7 @@ re-canonicalizes the state with `truncate!` iff `!g.isunitary` (the `canonicaliz
 keyword default).
 
 
-源码：[src/mpscore/gates.jl:36](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L36)
+源码：[src/mpscore/gates.jl:36](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L36)
 
 
 
@@ -2493,7 +2493,7 @@ gate breaks the *gauge* property outright, so `canonicalize` defaults to
 under `trunc`) after every non-unitary gate.
 
 
-源码：[src/mpscore/gates.jl:176](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L176)
+源码：[src/mpscore/gates.jl:176](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L176)
 
 
 	apply!(gs, ψ::CanonicalMPS; kwargs...) -> ψ
@@ -2501,7 +2501,7 @@ under `trunc`) after every non-unitary gate.
 Apply a sequence of gates (a circuit) in order — `apply!` gate by gate.
 
 
-源码：[src/mpscore/gates.jl:254](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L254)
+源码：[src/mpscore/gates.jl:254](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L254)
 
 
 
@@ -2524,7 +2524,7 @@ preserved without any `canonicalize!` (the SWAP gate is unitary). Sequences of
 Initializes the canonical form if needed.
 
 
-源码：[src/mpscore/gates.jl:262](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L262)
+源码：[src/mpscore/gates.jl:262](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L262)
 
 
 	swap!(ρ::CanonicalMPO, i::Integer; trunc=Defaults.alg_trunc()) -> ρ
@@ -2542,7 +2542,7 @@ generate arbitrary permutations of the site contents. Initializes the canonical 
 if needed.
 
 
-源码：[src/mpscore/gates.jl:296](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L296)
+源码：[src/mpscore/gates.jl:296](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L296)
 
 
 
@@ -2575,7 +2575,7 @@ positions(g::AbstractGate) = g.positions
 Shift all support positions of gate `g` by `by` sites.
 
 
-源码：[src/mpscore/gates.jl:19](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/gates.jl#L19)
+源码：[src/mpscore/gates.jl:19](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/gates.jl#L19)
 
 
 
@@ -2596,4 +2596,4 @@ identity transfer for every observable of a fixed `ρ`. The cache keeps a refere
 `ρ`; the callers pass `ρ` again and it is checked with `===` against the cached one.
 
 
-源码：[src/mpscore/expectation.jl:142](https://github.com/LeeQY1996/MOSSQuantumMPS/blob/master/src/mpscore/expectation.jl#L142)
+源码：[src/mpscore/expectation.jl:142](https://github.com/LeeQY1996/MOSSMPS/blob/master/src/mpscore/expectation.jl#L142)

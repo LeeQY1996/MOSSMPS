@@ -1,6 +1,6 @@
 # Charge-sector MPS and conditional sampling
 
-`MOSSQuantumMPS.MPSAlgorithms.sector_ground_state` uses the existing MPS/MPO
+`MOSSMPS.MPSAlgorithms.sector_ground_state` uses the existing MPS/MPO
 objects, environment contractions and Krylov effective-Hamiltonian actions.
 Each virtual bond carries explicit cumulative `(Nα,Nβ)` labels. Random
 initialization samples reachable paths using suffix charge sets; local Krylov
@@ -10,7 +10,7 @@ No global root-product list or effective Hamiltonian is constructed.
 
 ```julia
 using Random
-using MOSSQuantumMPS.MPSAlgorithms
+using MOSSMPS.MPSAlgorithms
 result = sector_ground_state(mpo, root_charges;
     target=(4,4), rng=MersenneTwister(42), max_bond=36,
     cutoff=1e-12, sweeps=12, tolerance=1e-10, memory_budget=2^30)

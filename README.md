@@ -1,8 +1,8 @@
-# MOSSQuantumMPS
+# MOSSMPS
 
-[在线 API 文档](https://leeqy1996.github.io/MOSSQuantumMPS/) · [API 与函数参考源文件](docs/api.md)
+[在线 API 文档](https://leeqy1996.github.io/MOSSMPS/) · [API 与函数参考源文件](docs/api.md)
 
-MOSSQuantumMPS is an MPS simulator and companion backend for [MOSSQuantum](https://github.com/LeeQY1996/MOSSQuantum). It represents pure states as matrix product states (`MPS`) and mixed states as density-operator MPS (`DensityOperatorMPS`). The shared dense-tensor MPS/MPO foundation lives in `MOSSQuantumMPS.MPSCore`, and higher-level tensor-network algorithms live in `MOSSQuantumMPS.MPSAlgorithms`.
+MOSSMPS is an MPS simulator and companion backend for [MOSSQuantum](https://github.com/LeeQY1996/MOSSQuantum). It represents pure states as matrix product states (`MPS`) and mixed states as density-operator MPS (`DensityOperatorMPS`). The shared dense-tensor MPS/MPO foundation lives in `MOSSMPS.MPSCore`, and higher-level tensor-network algorithms live in `MOSSMPS.MPSAlgorithms`.
 
 ## Installation for local development
 
@@ -13,16 +13,16 @@ using Pkg
 Pkg.activate("/path/to/my-mps-environment")
 Pkg.develop([
     PackageSpec(path="/path/to/MOSSQuantum"),
-    PackageSpec(path="/path/to/MOSSQuantumMPS"),
+    PackageSpec(path="/path/to/MOSSMPS"),
 ])
 Pkg.instantiate()
 ```
 
-DMRG, TDVP, TEBD, compression, tensor-network arithmetic, models, and related algorithms are included in `MOSSQuantumMPS.MPSAlgorithms`; the separate FiniteMPSAlgorithms package is no longer required.
+DMRG, TDVP, TEBD, compression, tensor-network arithmetic, models, and related algorithms are included in `MOSSMPS.MPSAlgorithms`; the separate FiniteMPSAlgorithms package is no longer required.
 
 ```julia
-using MOSSQuantumMPS.MPSCore: OpTerm, MPOHamiltonian
-using MOSSQuantumMPS.MPSAlgorithms: DMRG1, ground_state
+using MOSSMPS.MPSCore: OpTerm, MPOHamiltonian
+using MOSSMPS.MPSAlgorithms: DMRG1, ground_state
 
 Z = [1.0 0; 0 -1]
 X = [0.0 1; 1 0]
@@ -31,13 +31,13 @@ hamiltonian = MPOHamiltonian(OpTerm(-1.0, 1 => Z) + OpTerm(-1.0, 2 => Z) +
 energy, state, info = ground_state(hamiltonian, DMRG1(D=8, maxiter=50))
 ```
 
-The submodule keeps algorithm names such as `sample` and `amplitude` separate from simulator APIs while using exactly the same `MPSCore` types and generic functions. Model builders are available through `MOSSQuantumMPS.MPSAlgorithms.Models`. See the [algorithm reference and migration guide](docs/mps-algorithms.md) for the main interfaces.
+The submodule keeps algorithm names such as `sample` and `amplitude` separate from simulator APIs while using exactly the same `MPSCore` types and generic functions. Model builders are available through `MOSSMPS.MPSAlgorithms.Models`. See the [algorithm reference and migration guide](docs/mps-algorithms.md) for the main interfaces.
 
 
 ## Example
 
 ```julia
-using MOSSQuantum, MOSSQuantumMPS, Random
+using MOSSQuantum, MOSSMPS, Random
 
 # No bond truncation in this example; a compressed calculation can use truncdim(32).
 backend = MatrixProductBackend(trunc=NoTruncation())
@@ -70,6 +70,6 @@ The bridge implements MOSSQuantum gate and Kraus-map application, Pauli-term/ope
 
 This package includes its [GPL-3.0 license](LICENSE). MOSSQuantum's README states GNU GPL version 3.0. The `src/mpscore` foundation was migrated from FiniteMPSAlgorithms commit `ab117c6e09182699f450eb250224bebe0e928c9b`, which did not include an explicit license statement when checked. Its use and redistribution rights must be clarified with its copyright holder; the GPL license file in this repository does not establish authorization for that upstream code. See [provenance](PROVENANCE.md). MatrixAlgebraKit and TensorOperations include MIT license texts; preserve applicable third-party copyright and license notices when distributing dependencies.
 
-After truncation, a state may no longer be normalized. MOSSQuantum readout rejects an unnormalized state; normalize a pure `MPS` with `LinearAlgebra.normalize!(state)` or a `DensityOperatorMPS` with `MOSSQuantumMPS.normalize_tr!(state)` before measuring or sampling. These operations rescale the state and do not undo truncation error.
+After truncation, a state may no longer be normalized. MOSSQuantum readout rejects an unnormalized state; normalize a pure `MPS` with `LinearAlgebra.normalize!(state)` or a `DensityOperatorMPS` with `MOSSMPS.normalize_tr!(state)` before measuring or sampling. These operations rescale the state and do not undo truncation error.
 
 `MOSSQuantum.execution_capability` inspects a concrete circuit and execution mode without executing it. For example, it tracks the change from `MPS` to `DensityOperatorMPS` after a channel and checks both branches of a classical condition. The result can be `:supported`, `:unsupported`, or `:unknown`; normalization and other data-dependent checks still occur during execution. MPS execution is validated for nested circuits, retained measurements and reset, classical feedback, post-selection in `execute`, readout errors, and Pauli finite-shot estimation. These guarantees apply to the tested configurations, not all combinations of experiment options.

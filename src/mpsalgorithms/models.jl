@@ -15,7 +15,7 @@
 # can assemble the terms of an `OpSum` directly (see `MPOHamiltonian(::OpSum)`).
 #
 # The builders live in their own `Models` module: load them with
-# `using MOSSQuantumMPS.MPSAlgorithms.Models`.
+# `using MOSSMPS.MPSAlgorithms.Models`.
 module Models
 
 using LinearAlgebra
