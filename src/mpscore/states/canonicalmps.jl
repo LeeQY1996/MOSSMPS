@@ -53,8 +53,8 @@ CanonicalMPS(::Type{T}, ds::AbstractVector{Int}) where {T<:Number} =
 	CanonicalMPS([ones(T, 1, d, 1) for d in ds])
 CanonicalMPS(::Type{T}, L::Int; d::Int=2) where {T<:Number} = CanonicalMPS(T, fill(d, L))
 
-Base.copy(ψ::CanonicalMPS) = CanonicalMPS(copy(ψ.data), _copy_s(ψ), Ref(scaling(ψ)))
-Base.copy!(dst::CanonicalMPS, src::CanonicalMPS) = (copy!(dst.data, src.data); copy!(dst.s, src.s); setscaling!(dst, scaling(src)); dst)
+Base.copy(ψ::CanonicalMPS) = CanonicalMPS(copy.(ψ.data), _copy_s(ψ), Ref(scaling(ψ)))
+Base.copy!(dst::CanonicalMPS, src::CanonicalMPS) = (copy!(dst.data, copy.(src.data)); copy!(dst.s, _copy_s(src)); setscaling!(dst, scaling(src)); dst)
 function Base.complex(ψ::CanonicalMPS{T, R}) where {T, R}
 	T <: Complex && return ψ
 	return CanonicalMPS(complex.(ψ.data), [ismissing(s) ? s : complex.(s) for s in ψ.s], Ref(scaling(ψ)))

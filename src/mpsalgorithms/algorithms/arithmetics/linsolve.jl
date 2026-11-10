@@ -322,7 +322,7 @@ function _site_loss2(m::LinsolveCache, s::Integer, z::AbstractArray{T,4}, t::Abs
 end
 
 function leftsweep!(m::LinsolveCache, alg::ALSLinSolve2)
-	L = length(m.ket)
+	L = _two_site_length(m.ket)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		z2, t = _site_solve2(m, s, alg.alg_linsolve)
@@ -337,7 +337,7 @@ function leftsweep!(m::LinsolveCache, alg::ALSLinSolve2)
 end
 
 function rightsweep!(m::LinsolveCache, alg::ALSLinSolve2)
-	L = length(m.ket)
+	L = _two_site_length(m.ket)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -356,6 +356,7 @@ end
 sweep!(m::LinsolveCache, alg::ALSLinSolve2) = vcat(leftsweep!(m, alg), rightsweep!(m, alg))
 
 function linsolve!(x, A, y, alg::ALSLinSolve2)
+	_two_site_length(x)
 	m = LinsolveCache(x, A, y)
 	info = iterative_compute!(m, alg; residual=true)
 	# the sweeps solve the raw-data problem A_data·x = y_data; the represented equation

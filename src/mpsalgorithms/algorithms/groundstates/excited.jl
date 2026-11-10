@@ -44,11 +44,9 @@ end
 	leftsweep!(env::ExcitedStateCache, alg::DMRG1) -> kvals
 
 One left-to-right projected DMRG1 sweep: the local problem minimizes
-`⟨x|H_eff|x⟩` under the constraint `x ⊥ ψ₀⁽ˡ⁾` for all projectors `ψ₀⁽ˡ⁾`,
-implemented as the symmetrized projected linear map `Q†·H_eff·Q`
-(`Q = Πₖ (I-Pₖ)`). Symmetrizing keeps the map Hermitian (so Lanczos applies); on the
-subspace orthogonal to all `ψ₀⁽ˡ⁾` it coincides with `H_eff`, i.e. the same constrained
-problem.
+`⟨x|H_eff|x⟩` in the orthogonal complement of all effective projector tensors.
+An implicit QR basis reduces the eigensolve to this complement without forming a
+dense local basis. Excluded directions never enter the eigenproblem.
 """
 function leftsweep!(env::ExcitedStateCache, alg::DMRG1)
 	L = length(env.ket)
@@ -97,25 +95,29 @@ function _projected_local_update!(env::ExcitedStateCache, s::Integer, alg::DMRG1
 	# effective projector tensors: bra-side environments of the projectors at site s
 	peff = [@tensor pe[-1, -2, -3] := c.cstorage[s][-1, 1] * c.ket[s][1, -2, 2] * c.cstorage[s+1][-3, 2]
 			for c in env.cstorages]
-	# Q†·H_eff·Q with Q = (I-Pₙ)···(I-P₁), P = Σ p p†: Hermitian for any Q, whereas the
-	# one-sided (I-P)·H_eff is not (P and H_eff do not commute) and would break the
-	# `ishermitian=true` Lanczos. On the subspace ⊥ all pₖ, Q = Q† = I, so the map is the
-	# same constrained problem; the adjoint side projects in reverse order.
-	project(x) = begin
-		for p in peff
-			x = x .- dot(p, x) .* p
+	shape = size(env.ket[s])
+	n = length(env.ket[s])
+	constraints = isempty(peff) ? zeros(scalartype(env.ket), n, 0) : hcat(vec.(peff)...)
+	# Normalize before rank detection so rescaled and repeated constraints keep the same span.
+	for p in eachcol(constraints)
+		scale = maximum(abs, p)
+		isfinite(scale) || throw(ArgumentError("non-finite excited-state constraint"))
+		if scale > 0
+			p ./= scale
+			p ./= norm(p)
 		end
-		return x
 	end
-	f(x) = begin
-		y = ac_prime(project(x), heff)
-		for p in reverse(peff)
-			y = y .- dot(p, y) .* p
-		end
-		return y
-	end
-	vals, vecs, info = eigsolve(f, env.ket[s], 1, :SR, alg.alg_eigsolve)
-	env.ket[s] = vecs[1]
+	factor = qr(constraints, ColumnNorm())
+	tolerance = max(size(constraints)...) * eps(real(float(eltype(constraints))))
+	r = count(x -> abs(x) > tolerance, diag(factor.R))
+	r < n || throw(ArgumentError("excited-state constraints leave no local orthogonal subspace"))
+	# The implicit Q stores only the constraint reflectors, not an n×n complement matrix.
+	lift(v) = reshape(factor.Q * vcat(zeros(eltype(v), r), v), shape)
+	restrict(x) = (factor.Q' * vec(x))[r+1:end]
+	guess = restrict(env.ket[s])
+	norm(guess) <= tolerance * norm(env.ket[s]) && fill!(guess, one(eltype(guess)))
+	vals, vecs, info = eigsolve(v -> restrict(ac_prime(lift(v), heff)), guess, 1, :SR, alg.alg_eigsolve)
+	env.ket[s] = lift(vecs[1])
 	return real(vals[1]), info
 end
 

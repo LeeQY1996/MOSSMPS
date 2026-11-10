@@ -343,7 +343,7 @@ right-canonical and the precomputed right environments remain valid. Every appli
 Clifford circuit is recorded on `env.gates`.
 """
 function leftsweep!(env::CADMRGCache, alg::CADMRG)
-	L = length(env.ket)
+	L = _two_site_length(env.ket)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		kvals[s], _ = _cadmrg_local_update!(env, s, alg; move_right=true)
@@ -365,7 +365,7 @@ into the left site of each pair, keeping the already-swept tensors right-canonic
 Every applied Clifford circuit is recorded on `env.gates`.
 """
 function rightsweep!(env::CADMRGCache, alg::CADMRG)
-	L = length(env.ket)
+	L = _two_site_length(env.ket)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -397,6 +397,7 @@ Clifford circuits together with the state, use `ground_state(h, alg)` which retu
 [`CAMPS`](@ref).
 """
 function ground_state!(ψ::CanonicalMPS, h::AbstractMPO, alg::CADMRG)
+	_two_site_length(ψ)
 	hd = _dense_mpo(h)   # CA-DMRG rewrites MPO tensors in place; use dense form
 	env = CADMRGCache(ψ, hd)
 	info = iterative_compute!(env, alg)
@@ -418,6 +419,7 @@ Observables on the original Hamiltonian picture are evaluated with
 Hamiltonian's Pauli-term expectations.
 """
 function ground_state(h::MPOHamiltonian, alg::CADMRG)
+	_two_site_length(h)
 	TC = complex(scalartype(h))
 	ψ = randommps(TC, ophydims(h); D=_guess_bond(alg.trunc))
 	hd = _dense_mpo(h)   # CA-DMRG rewrites MPO tensors in place; use dense form

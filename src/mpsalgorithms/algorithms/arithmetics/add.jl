@@ -236,7 +236,7 @@ function _reduce_two_site(m::AddCache, s::Integer)
 end
 
 function leftsweep!(m::AddCache, alg::DMRG2)
-	L = length(m.bra)
+	L = _two_site_length(m.bra)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		t2 = _reduce_two_site(m, s)
@@ -252,7 +252,7 @@ function leftsweep!(m::AddCache, alg::DMRG2)
 end
 
 function rightsweep!(m::AddCache, alg::DMRG2)
-	L = length(m.bra)
+	L = _two_site_length(m.bra)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -275,6 +275,7 @@ sweep!(m::AddCache, alg::DMRG2) = vcat(leftsweep!(m, alg), rightsweep!(m, alg))
 _kkt_ratio(form::Number, dirnorm2::Number) = form / dirnorm2
 
 function add!(out, chains, alg::DMRG2)
+	_two_site_length(out)
 	cache = AddCache(out, chains)
 	info = iterative_compute!(cache, alg)
 	# Σ kets = β·bra at convergence: β = Σ_n ⟨bra|ket_n⟩ / ⟨bra|bra⟩. Unlike the other
@@ -289,10 +290,12 @@ end
 
 function add(ψs::Vector{<:CanonicalMPS}, alg::DMRG2)
 	isempty(ψs) && throw(ArgumentError("empty input"))
+	_two_site_length(ψs[1])
 	return add!(svdguess_add(ψs, _guess_bond(alg.trunc)), ψs, alg)
 end
 function add(ρs::Vector{<:CanonicalMPO}, alg::DMRG2)
 	isempty(ρs) && throw(ArgumentError("empty input"))
+	_two_site_length(ρs[1])
 	return add!(svdguess_add(ρs, _guess_bond(alg.trunc)), ρs, alg)
 end
 add(ψA::CanonicalMPS, ψB::CanonicalMPS, alg::DMRG2) = add([ψA, ψB], alg)

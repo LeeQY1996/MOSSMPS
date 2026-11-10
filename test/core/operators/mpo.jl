@@ -155,6 +155,14 @@ end
 end
 
 @testset "todense/tompo roundtrip" begin
+	for ds in ([2], [2, 2], [2, 3, 2]), T in (Float64, ComplexF64),
+	    trunc in (NoTruncation(), Defaults.alg_orth_trunc())
+		Mzero = zeros(T, prod(ds), prod(ds))
+		zero_mpo = tompo(Mzero, ds; trunc)
+		@test todense(zero_mpo) == Mzero
+		@test iszero(norm(zero_mpo))
+		@test all(A -> all(isfinite, A), zero_mpo.data)
+	end
 	Random.seed!(47)
 	L = 4
 	ds = fill(2, L)

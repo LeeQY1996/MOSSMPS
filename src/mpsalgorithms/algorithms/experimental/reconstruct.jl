@@ -426,7 +426,7 @@ function _ls2_loss(c::ALSReconCache, s::Integer, w::AbstractArray)
 end
 
 function leftsweep!(c::ALSReconCache, alg::ALSRecon2)
-	L = length(c.ψ)
+	L = _two_site_length(c.ψ)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		w = _ls2_solve(c, s, alg)
@@ -441,7 +441,7 @@ function leftsweep!(c::ALSReconCache, alg::ALSRecon2)
 end
 
 function rightsweep!(c::ALSReconCache, alg::ALSRecon2)
-	L = length(c.ψ)
+	L = _two_site_length(c.ψ)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -482,6 +482,7 @@ initial guess is a random chain of the bond profile demanded by `alg`. Returns `
 here, so `info.residual` holds the final loss).
 """
 function reconstruct(samples, ds::Vector{Int}, alg::Union{ALSRecon,ALSRecon2} = ALSRecon())
+	alg isa ALSRecon2 && _two_site_length(ds)
 	# normalized init: an unnormalized random chain of bond D carries amplitudes of
 	# magnitude ~(d·D²)^(L/2), which wrecks the conditioning of the local normal
 	# equations (the CG solves make no progress at all)
@@ -498,6 +499,7 @@ re-fitted to `alg`'s demand with `changebond!`). Returns `(ψ, info)` with `info
 [`ALSConvergenceInfo`](@ref) of the sweeps (`info.residual` = final loss).
 """
 function reconstruct!(ψ::CanonicalMPS, samples, alg::Union{ALSRecon,ALSRecon2} = ALSRecon())
+	alg isa ALSRecon2 && _two_site_length(ψ)
 	ds = phydims(ψ)
 	X, a = _normalize_samples(ds, samples)
 	D0 = _initial_bond(alg)
@@ -529,6 +531,7 @@ information. Each round runs the inner sweeps of `iterative_compute!` up to
 """
 function reconstruct(Afun::Function, ds::Vector{Int},
 					 alg::Union{ALSRecon,ALSRecon2} = ALSRecon())
+	alg isa ALSRecon2 && _two_site_length(ds)
 	ψ = randommps(ComplexF64, ds; D=_initial_bond(alg), normalize=true)
 	seen = Set{Vector{Int}}()
 	x0 = _random_coords(ds, 1)[1]

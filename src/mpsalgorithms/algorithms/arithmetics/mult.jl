@@ -470,7 +470,7 @@ function _map_fused2R(S::AbstractArray{T,5}, m::MultCache, s::Integer) where {T}
 end
 
 function leftsweep!(m::MultCache, alg::DMRG2)
-	L = length(m.bra)
+	L = _two_site_length(m.bra)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		K = _fuse_left(m, s)
@@ -487,7 +487,7 @@ function leftsweep!(m::MultCache, alg::DMRG2)
 end
 
 function rightsweep!(m::MultCache, alg::DMRG2)
-	L = length(m.bra)
+	L = _two_site_length(m.bra)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -509,6 +509,7 @@ sweep!(m::MultCache, alg::DMRG2) = vcat(leftsweep!(m, alg), rightsweep!(m, alg))
 # (`_guess_bond`); the two-site sweeps adapt the bond dimension during the iterations,
 # so the guess may be smaller than the final bond
 function mult!(out, h, x, alg::DMRG2)
+	_two_site_length(out)
 	cache = MultCache(out, h, x)
 	info = iterative_compute!(cache, alg)
 	# attach the external operand scales and fold the center tensor's norm (the total

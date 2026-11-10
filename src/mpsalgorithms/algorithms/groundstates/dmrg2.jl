@@ -70,7 +70,7 @@ absorbs the singular values into site s+1 (the new orthogonality center); the sw
 tensors stay left-canonical, the not-yet-swept tensors stay right-canonical.
 """
 function leftsweep!(env::DMRGCache, alg::DMRG2)
-	L = length(env.ket)
+	L = _two_site_length(env.ket)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		kvals[s], _ = _dmrg2_local_update!(env, s, alg; move_right=true)
@@ -92,7 +92,7 @@ bond and are recorded on the state (`ket.s[bond+1]`); the final center (site 1) 
 normalized, so the returned MPS satisfies `iscanonical`.
 """
 function rightsweep!(env::DMRGCache, alg::DMRG2)
-	L = length(env.ket)
+	L = _two_site_length(env.ket)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -164,6 +164,7 @@ the [`ALSConvergenceInfo`](@ref) of the sweeps (`info.losses` is the per-sweep
 local-energy history).
 """
 function ground_state!(ψ::CanonicalMPS, h::AbstractMPO, alg::DMRG2)
+	_two_site_length(ψ)
 	env = DMRGCache(ψ, h)
 	info = iterative_compute!(env, alg)
 	setscaling!(ψ, 1.0)

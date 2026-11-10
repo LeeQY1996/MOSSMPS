@@ -73,6 +73,24 @@
 	end
 end
 
+@testset "experimental two-site single-site boundaries" begin
+    state = randommps(ComplexF64, [2]; D=1)
+    before = deepcopy(state)
+    H = MPOHamiltonian(1, OpTerm(1.0, 1 => [1.0 0; 0 2.0]))
+    @test_throws ArgumentError ground_state!(state, H, CADMRG())
+    @test_throws ArgumentError ground_state(H, CADMRG())
+    samples = [([1], 1.0), ([2], 0.0)]
+    @test_throws ArgumentError reconstruct!(state, samples, ALSRecon2())
+    @test_throws ArgumentError reconstruct(samples, [2], ALSRecon2())
+    calls = Ref(0)
+    oracle(x) = (calls[] += 1; 1.0)
+    @test_throws ArgumentError reconstruct(oracle, [2], ALSRecon2())
+    @test calls[] == 0
+    @test state.data == before.data
+    @test state.s == before.s
+    @test scaling(state) == scaling(before)
+end
+
 @testset "ALS amplitude reconstruction" begin
         Random.seed!(20240915)
         L = 4

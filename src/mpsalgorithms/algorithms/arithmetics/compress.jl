@@ -190,7 +190,7 @@ function _map_fused2R(S::AbstractArray{T,4}, c::OverlapCache, s::Integer) where 
 end
 
 function leftsweep!(c::OverlapCache, alg::DMRG2)
-	L = length(c.bra)
+	L = _two_site_length(c.bra)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		K = _fuse_left(c, s)
@@ -205,7 +205,7 @@ function leftsweep!(c::OverlapCache, alg::DMRG2)
 end
 
 function rightsweep!(c::OverlapCache, alg::DMRG2)
-	L = length(c.bra)
+	L = _two_site_length(c.bra)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -224,6 +224,7 @@ end
 sweep!(c::OverlapCache, alg::DMRG2) = vcat(leftsweep!(c, alg), rightsweep!(c, alg))
 
 function compress!(out, x, alg::DMRG2)
+	_two_site_length(out)
 	cache = OverlapCache(out, x)
 	info = iterative_compute!(cache, alg)
 	# attach the external operand scale and fold the center norm into `scaling` (see `mult!`)

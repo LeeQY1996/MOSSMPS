@@ -19,6 +19,12 @@ Abstract base of the two-site sweep engines: `DMRG2` (the concrete `ALSLinSolve2
 """
 abstract type TwoSiteUpdate <: IterativeMPSAlgorithm end
 
+function _two_site_length(x)
+	L = length(x)
+	L >= 2 || throw(ArgumentError("two-site algorithms require at least two sites; use a single-site algorithm"))
+	return L
+end
+
 """
 	SVDCompression(; trunc=truncdimcutoff(D=Defaults.D, ϵ=Defaults.tol, add_back=0), verbosity=0)
 

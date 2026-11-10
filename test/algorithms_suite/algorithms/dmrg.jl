@@ -43,6 +43,64 @@
         @test abs(dot(todense(ψ1), todense(ψ0))) < 1e-6
 end
 
+@testset "excited-state constraints and energy shifts" begin
+    p0 = prodmps(Float64, [2, 2], [1, 1])
+    p1 = prodmps(Float64, [2, 2], [2, 1])
+    scaled = copy(p0)
+    scaled[1] .*= 3
+    mixed = complex(p0) + im * complex(p1)
+    alg = DMRG1(D=2, maxiter=20, tol=1e-12)
+    for shift in (-5.0, 0.0, 5.0)
+        H = MPOHamiltonian(2, OpTerm(1.0, 1 => [1+shift 0; 0 2+shift]),
+                             OpTerm(1.0, 2 => [1.0 0; 0 3.0]))
+        for constraints in ((p0,), (scaled,), (p0, scaled, p0))
+            Random.seed!(1)
+            E, state, _ = excited_state(H, alg, constraints...)
+            @test E ≈ 3+shift atol=1e-10
+            @test abs(dot(p0, state)) < 1e-10
+            @test norm(state) ≈ 1 atol=1e-10
+        end
+        Random.seed!(1)
+        E, state, _ = excited_state(complex(H), alg, complex(p0), mixed, mixed)
+        @test E ≈ 4+shift atol=1e-10
+        @test abs(dot(p0, state)) < 1e-10
+        @test abs(dot(p1, state)) < 1e-10
+    end
+    H = MPO([reshape([1.0 0; 0 2.0], 1, 2, 1, 2)])
+    states = [prodmps(Float64, [2], [p]) for p in 1:2]
+    @test_throws ArgumentError excited_state!(copy(states[1]), H, states, DMRG1(D=1))
+end
+
+@testset "two-site algorithms reject single-site chains" begin
+    state = prodmps(Float64, [2], [1])
+    H = identitympo(Float64, [2])
+    alg = DMRG2(maxiter=2, trunc=NoTruncation())
+    for run in (() -> ground_state!(copy(state), H, alg),
+                () -> compress(state, alg),
+                () -> compress!(copy(state), state, alg),
+                () -> add([state, state], alg),
+                () -> add!(copy(state), [state, state], alg),
+                () -> mult(H, state, alg),
+                () -> mult!(copy(state), H, state, alg),
+                () -> hadamard(state, state, alg),
+                () -> hadamard!(copy(state), state, state, alg),
+                () -> linsolve(H, state, ALSLinSolve2(maxiter=2)),
+                () -> linsolve!(copy(state), H, state, ALSLinSolve2(maxiter=2)),
+                () -> add([CanonicalMPO(Float64, [2])], alg))
+        error = try
+            run()
+            nothing
+        catch error
+            error
+        end
+        @test error isa ArgumentError
+        @test occursin("at least two sites", sprint(showerror, error))
+    end
+    env = DMRGCache(copy(state), H)
+    @test_throws ArgumentError leftsweep!(env, alg)
+    @test_throws ArgumentError rightsweep!(env, alg)
+end
+
 @testset "dmrg coverage" begin
 	Random.seed!(77)
 	p6 = model_params(6)

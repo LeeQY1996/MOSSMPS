@@ -397,6 +397,7 @@ function tompo(M::AbstractMatrix, phydims::AbstractVector{Int};
 	# data-normalized gauge: the represented scale lives in `scaling` as scaling^L, and
 	# the Schmidt values are rescaled to the normalized data (they were raw SVD values)
 	nrm = norm(data[1])
+	iszero(nrm) && return CanonicalMPO([zeros(TC, 1, d, 1, d) for d in phydims])
 	data[1] = data[1] / nrm
 	for i in 2:L
 		sarr[i] = sarr[i] ./ nrm

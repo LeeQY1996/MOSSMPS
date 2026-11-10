@@ -67,6 +67,26 @@
 	@test todense(prodmps(Float64, fill(2, L), fill(1, L))) ≈ [1.0; zeros(2^L - 1)]
 end
 
+@testset "canonical chain copy ownership" begin
+    for x in (CanonicalMPS([reshape([2.0, 0.0], 1, 2, 1)]),
+              CanonicalMPO([reshape([2.0, 0.0, 0.0, 0.0], 1, 2, 1, 2)]),
+              randommps(ComplexF64, [2, 2]; D=2),
+              randommpo(ComplexF64, [2, 2]; D=2))
+        before = todense(x)
+        spectra = [copy(s) for s in x.s]
+        for copied in (copy(x), copy!(copy(x), x))
+            copied[1] .*= 3
+            copied.s[1] .*= 2
+            length(x) > 1 && (copied.s[2] .*= 2)
+            setscaling!(copied, 4.0)
+            @test todense(x) == before
+            @test x.s == spectra
+        end
+        canonicalize(x)
+        @test todense(x) == before
+    end
+end
+
 @testset "hadamard product (⊙)" begin
 	Random.seed!(71)
 	L = 6

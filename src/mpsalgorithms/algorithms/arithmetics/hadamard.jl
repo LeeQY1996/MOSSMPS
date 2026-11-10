@@ -404,7 +404,7 @@ function _map_fused2R(S, m::HadamardCache, s::Integer)
 end
 
 function leftsweep!(m::HadamardCache, alg::DMRG2)
-	L = length(m.bra)
+	L = _two_site_length(m.bra)
 	kvals = zeros(Float64, L)
 	for s in 1:L-1
 		K = _fuse_left(m, s)
@@ -419,7 +419,7 @@ function leftsweep!(m::HadamardCache, alg::DMRG2)
 end
 
 function rightsweep!(m::HadamardCache, alg::DMRG2)
-	L = length(m.bra)
+	L = _two_site_length(m.bra)
 	kvals = zeros(Float64, L)
 	k = 1
 	for s in L:-1:2
@@ -438,6 +438,7 @@ end
 sweep!(m::HadamardCache, alg::DMRG2) = vcat(leftsweep!(m, alg), rightsweep!(m, alg))
 
 function hadamard!(χ, ψA, ψB, alg::DMRG2)
+	_two_site_length(χ)
 	cache = HadamardCache(χ, ψA, ψB)
 	info = iterative_compute!(cache, alg)
 	# attach the ⊙ convention scale scaling(ψA)·scaling(ψB) and fold the center norm
